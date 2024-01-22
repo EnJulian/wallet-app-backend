@@ -62,7 +62,7 @@ export const createNewUser = async (
     code: 201,
     status: 'success',
     message: 'wallet user created',
-    data: { email: createUserResult.email }
+    data: createUserResult 
 
   }
 }
