@@ -25,6 +25,7 @@
 //   })
 
 import ap1Version1 from './config/versioning/v1'
+import router from './routes/user.routes'
 
 import {
   notFound,
@@ -52,5 +53,6 @@ app.use('/api/v1', ap1Version1)
 app.use(appErrorHandler)
 app.use(genericErrorHandler)
 app.use(notFound)
+app.use('/api/v1',router)
 
 module.exports = app
