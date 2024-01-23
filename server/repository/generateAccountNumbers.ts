@@ -20,7 +20,7 @@ const getRandomNumber = (min: number, max: number): number => {
  * @returns {string}
  */
 export const accountNumbers = (): string => {
-  const randomNumberRange = Array.from(new Array(12), (x, i) => i)
+  const randomNumberRange = Array.from(new Array(11), (x, i) => i)
 
   let accountNumber = ''
 

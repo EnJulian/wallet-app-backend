@@ -1,11 +1,9 @@
-
 import mongoose, { Schema } from 'mongoose'
 
 const transactionStatus: string[] = ['Successful', 'Failed']
 const walletType: string[] = ['NairaWallet', 'DollarWallet']
-const transactionType: string[] = ['Wallet Transfer', 'Wallet Deposit']
 
-const transactionSchema = new Schema({
+const depositSchema = new Schema({
   userAccountNumber: {
     type: String,
     require: true
@@ -16,14 +14,13 @@ const transactionSchema = new Schema({
   },
   transactionType:{
     type:String,
-    enum: transactionType
+    default: 'Wallet Deposit'
   },
   wallet: {
     type: String,
     enum: walletType
   },
   amount: Number,
-  balance: Number,
   createdAt: {
     type: Date,
     immutable: true,
@@ -32,4 +29,4 @@ const transactionSchema = new Schema({
 
 })
 
-export default mongoose.model('Transactions', transactionSchema)
+export default mongoose.model('Deposit', depositSchema)
