@@ -14,8 +14,13 @@ import config from '../config/env/index'
  * @date 1/15/2024 - 9:50:35 AM
  *
  * @async
- * @param {Request} req
  * @returns
+ * @param firstname
+ * @param surname
+ * @param othernames
+ * @param email
+ * @param password
+ * @param phonenumber
  */
 
 export const createNewUser = async (
@@ -62,7 +67,7 @@ export const createNewUser = async (
     code: 201,
     status: 'success',
     message: 'wallet user created',
-    data: { email: createUserResult.email }
+    data: createUserResult 
 
   }
 }
