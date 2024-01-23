@@ -46,7 +46,7 @@ function validateAmount(res: Response, amount: number){
  * @returns {*}
  */
 function validateAccountNumbers(res: Response, accountNumber: string){
-  if (!validator.isNumeric(accountNumber) || accountNumber.length !== 12) {
+  if (!validator.isNumeric(accountNumber) || accountNumber.length !== 11) {
     return responseProvider(res, 'error', 'invalid account number', 400)
   }
 
