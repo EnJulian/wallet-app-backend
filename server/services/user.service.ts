@@ -1,12 +1,8 @@
 import User from '../models/User'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import {
-  provideResponse,
-  ErrorResponseProvider
-} from '../repository/response'
-import { accountNumbers } from '../repository/generateAccountNumbers'
-import { type UserDataType } from '../repository/userDataType'
+import { Utils, provideResponse, ErrorResponseProvider } from '../utils'
+import { type UserDataType } from '../interfaces/userDataType'
 import config from '../config/env/index'
 
 /**
@@ -47,7 +43,7 @@ export const createNewUser = async (
   const hashedPwd = await bcrypt.hash(password, 10)
 
   // get accountNumber
-  const accountNumber: string = accountNumbers()
+  const accountNumber: string = Utils.accountNumbers()
   
   // create and store the new wallet user
   const newWalletUser: UserDataType = {

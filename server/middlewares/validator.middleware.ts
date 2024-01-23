@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from 'express'
-import { responseProvider } from '../repository/response'
+import { responseProvider } from "../utils";
 import validator from 'validator'
 
 // import { WalletType } from '../../helper/transactionsDataType'

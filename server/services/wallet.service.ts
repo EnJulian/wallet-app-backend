@@ -1,8 +1,45 @@
-import {getWalletBalance, updateWalletBalance} from '../repository/wallet.queries'
-import {provideResponse} from '../repository/response'
-import {FundDataType, TransactionStatus, TransferDataType, WalletType} from '../repository/transactionsDataType'
+// import {getWalletBalance, updateWalletBalance} from '../repository/wallet.queries'
+// import {provideResponse} from '../utils/response'
+import {FundDataType, TransactionStatus, TransferDataType, WalletType} from '../interfaces'
+import { provideResponse } from '../utils'
 import Transactions from '../models/Transactions'
 import User from '../models/User'
+
+
+const getWalletBalance = async (accountNumber: string) => {
+  const walletBalance = await User.findOne({ accountNumber })
+
+  const dollars = walletBalance!.DollarWallet
+  const naira = walletBalance!.NairaWallet
+  return {  dollars, naira }
+
+}
+
+
+const updateWalletBalance = async (
+    accountNumber: string,
+    accountType: WalletType,
+    amount: number) => {
+
+  const filter = { accountNumber }
+
+
+  if (accountType === 'DollarWallet') {
+    const updatedUserWallet = await User.findOneAndUpdate(filter, { DollarWallet: amount }, { new: true })
+    return { "dollar": updatedUserWallet!.DollarWallet }
+  }
+
+  if (accountType === 'NairaWallet') {
+    const updatedUserWallet = await User.findOneAndUpdate(filter, { NairaWallet: amount }, { new: true })
+    return { "naira": updatedUserWallet!.NairaWallet }
+  }
+}
+
+
+
+
+
+
 
 
 export const fetchWalletBalance = async (accountNumber: string) => {
