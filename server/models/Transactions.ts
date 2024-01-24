@@ -8,7 +8,7 @@ const fundSchema = new Schema({
     type: String,
     require: true
   },
-  status: {
+  Status: {
     type: String,
     enum: transactionStatus
   },
@@ -20,7 +20,8 @@ const fundSchema = new Schema({
   createdAt: {
     type: Date,
     immutable: true
-  }
+  },
+ 
 
 })
 
@@ -29,7 +30,7 @@ const transferSchema = new Schema({
     type: String,
     require: true
   },
-  status: {
+  Status: {
     type: String,
     enum: transactionStatus
   },
@@ -37,14 +38,18 @@ const transferSchema = new Schema({
     type: String,
     enum: walletType
   },
-  amount: Number,
-  accountnumber: Number,
+  transactionAmount: Number,
+
   createdAt: {
     type: Date,
-    immutable: true
+    immutable: true,
+    default: Date.now
+  },
+  sender: {
+    type:String
   }
 
 })
 
-export const transfer = mongoose.model('Transfer', transferSchema)
+export default mongoose.model('transfers', transferSchema)
 export const funds = mongoose.model('Fund', fundSchema)

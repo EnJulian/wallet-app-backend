@@ -10,3 +10,14 @@ export interface UserDataType {
   Dollars?: number
   Naira?: number
 }
+
+
+export interface transferTransaction {
+  userAccountNumber: string;
+  transactionAmount: number;
+  status: string;
+}; 
+
+export interface CustomRequest extends Request {
+  data?: any; // Add any additional properties you need
+}

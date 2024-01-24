@@ -43,7 +43,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
     unique: true,
-    index: true
+    index: true,
   },
   DollarWallet: {
     type: Number,
@@ -62,7 +62,7 @@ const userSchema = new Schema({
   updatedAt: {
     type: Date,
     default: () => Date.now()
-  }
+  },
 })
 
 // export default UserSchema;
