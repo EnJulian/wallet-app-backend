@@ -53,7 +53,7 @@ const userSchema = new Schema({
     type: Number,
     default: 0
   },
-  pin: Number,
+  pin: String,
   createdAt: {
     type: Date,
     immutable: true,
