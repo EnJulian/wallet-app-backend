@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import { Utils, provideResponse, ErrorResponseProvider } from '../utils'
 import { type UserDataType } from '../interfaces/userDataType'
 import config from '../config/env/index'
+import { Request, Response } from 'express'
 
 /**
  * register new wallet user
@@ -121,5 +122,28 @@ export const loginUser = async (email: string, password: string ) => {
   )
 }
 
+export const createPin = async (req: Request, res: Response) => {
+  const {pin}= req.body
+  const parsedPin = parseInt(pin, 10);
+
+  if (
+    isNaN(parsedPin) || // Check if the parsed value is NaN (not a number)
+    parsedPin < 0 || // Check if the parsed value is a negative number
+    parsedPin >= 10000 || // Check if the parsed value is greater than or equal to 10000
+    pin.length !== 4 // Check if the length of the original pin is not 4
+  ) {
+    return res.status(400).json({
+      message: "PIN must be a string containing a 4-digit number",
+      status: "error",
+    });
+  }
+  const saltRounds=10;
+  const hashedPin = bcrypt.hashSync(pin,saltRounds)
+  const userData = (req as any).data;
+  await User.updateOne({_id: userData._id}, {pin: hashedPin})
+  const result= await User.findOne({_id: userData._id}) 
+  
+  return res.status(200).json(result)
+};
 
 
