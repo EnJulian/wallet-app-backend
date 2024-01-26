@@ -1,4 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
+// import validator from 'validator'
+
+// TODO generate user account number - unique, 10 digits
 
 const userSchema = new Schema({
   firstname: {
@@ -29,6 +32,27 @@ const userSchema = new Schema({
     select: true,
     minlength: [8, 'the password require more than 8 characters']
   },
+  
+  resetToken: {
+    type: String,
+    index: true
+  },
+  expireToken: {
+    type: String,
+    index: true
+  },
+
+  resetPasswordExpires: {
+    type: String,
+    index: true
+  },
+
+  resetPasswordToken: {
+    type: String,
+    index: true
+  },
+
+
   email: {
     type: String,
     lowercase: true,
@@ -36,6 +60,7 @@ const userSchema = new Schema({
     unique: true,
     index: true
   },
+
   accountNumber: {
     type: String,
     required: true,
@@ -50,7 +75,7 @@ const userSchema = new Schema({
     type: Number,
     default: 0
   },
-  pin: Number,
+  pin: String,
   createdAt: {
     type: Date,
     immutable: true,
