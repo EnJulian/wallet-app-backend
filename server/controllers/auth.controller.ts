@@ -1,7 +1,7 @@
 
 import { Request, Response } from 'express';
 import  User  from '../models/User';
-import crypto from 'crypto';
+//import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import config from '../config/env';
