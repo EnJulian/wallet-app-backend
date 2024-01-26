@@ -16,8 +16,9 @@ export interface transferTransaction {
   userAccountNumber: string;
   transactionAmount: number;
   status: string;
+  currency: string;
 }; 
 
-export interface CustomRequest extends Request {
-  data?: any; // Add any additional properties you need
-}
+// export interface CustomRequest extends Request {
+//   data?: any; // Add any additional properties you need
+// }

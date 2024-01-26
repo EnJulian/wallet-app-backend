@@ -100,13 +100,13 @@ import { Request, Response } from 'express'
 
 export const transferTransactions = async (req: Request, res: Response) => {
     try {
-      const {_id, currency} = req.data
-      const { userAccountNumber, transactionAmount } = req.body as unknown as transferTransaction;
+      const {_id} = req.data
+      const { userAccountNumber, transactionAmount, currency } = req.body as unknown as transferTransaction;
   
       if (!(userAccountNumber && transactionAmount)) {
         res.status(200).json({error: "Error"});
         return;
-      }
+      } 
         
       const beneficiary = await User.findOne({ accountNumber: userAccountNumber });
       if (beneficiary === null) {
@@ -114,49 +114,80 @@ export const transferTransactions = async (req: Request, res: Response) => {
         return;
     }
   
-      const dollars = beneficiary!.DollarWallet
-      const Naira = beneficiary!.NairaWallet
-console.log(`This is beneficiary's old balance: ${dollars}`)
+      const beneficiaryDollars = beneficiary!.DollarWallet
+      const beneficiaryNaira = beneficiary!.NairaWallet
+
+
+console.log(`This is beneficiary's old balance - dollar account: ${beneficiaryDollars}`)
+console.log(`This is beneficiary's old balance - naira account: ${beneficiaryNaira}`)
+
       const accountOwner = await User.findById(_id);
 
       if (!accountOwner) {
         res.status(404).send(`Account owner with id ${(req as any).User?.User_id} does not exist`);
         return;
       }
-      console.log(`This is sender's old balance: ${accountOwner.DollarWallet}`)
+
+      const senderDollars = accountOwner!.DollarWallet
+      const senderNaira = accountOwner!.NairaWallet
+
+      console.log(`This is sender's old balance - dollar account: ${senderDollars}`)
+      console.log(`This is sender's old balance - naira account: ${senderNaira}`)
      
       const senderWallet = currency === 'Dollar' ? accountOwner.DollarWallet : accountOwner.NairaWallet;
-    const beneficiaryWallet = currency === 'Dollar' ? beneficiary.DollarWallet : beneficiary.NairaWallet;
-
+      const beneficiaryWallet = currency === 'Dollar' ? beneficiary.DollarWallet : beneficiary.NairaWallet;
+    console.log(`This is sender's old balance(naira): ${senderWallet}`)
       if (transactionAmount > senderWallet && transactionAmount > 0) {
         res.status(400).send("Insufficient funds to make this transfer");
         return;
       }
-    
+     
       if (accountOwner.accountNumber === beneficiary.accountNumber) {
         res.status(400).send("Sorry, you cannot send money to yourself");
         return;
       }
        
+      // if(currency === 'Naira'){
+      //   beneficiary.NairaWallet +=transactionAmount
+      //   accountOwner.NairaWallet -= transactionAmount
+      // }
       
+      // if (currency === 'dollars'){
+      //   console.log("Updating Dollar Wallets");
+      // console.log("Old Beneficiary Dollar Wallet:", beneficiary.DollarWallet);
+      // console.log("Old Sender Dollar Wallet:", accountOwner.DollarWallet);
+      //   beneficiary.DollarWallet +=transactionAmount
+      //   accountOwner.DollarWallet -= transactionAmount
+
+              
+      // console.log("New Beneficiary Dollar Wallet:", beneficiary.DollarWallet);
+      // console.log("New Sender Dollar Wallet:", accountOwner.DollarWallet);
+      // }
       const currencyWallet = currency + 'Wallet';
-      // const myObj: {[index: string]:any} = {}
-      (beneficiary as any)[currencyWallet] += transactionAmount;
-      (accountOwner as any)[currencyWallet] -= transactionAmount;
-      
-      await User.findOneAndUpdate(
+
+      console.log("Currency Wallet: ", currencyWallet )
+        
+      const updateBeneficiary = await User.findOneAndUpdate(
         { accountNumber: userAccountNumber },
-        { $inc: { [currencyWallet]: transactionAmount } }
+        { $inc: { [currency + 'Wallet']: transactionAmount } },
+        {new: true}
       );
-    
-      await User.findByIdAndUpdate(
+
+      console.log(updateBeneficiary)
+     
+      const updateSender = await User.findByIdAndUpdate(
         _id,
-        { $inc: {[currencyWallet]: -transactionAmount } }
-      );
-      // beneficiary.DollarWallet += transactionAmount;
+        { $inc: { [currency + 'Wallet']: -transactionAmount } },
+        { new: true }
+      );      
+
+      console.log(updateSender)
+
+      // beneficiary.DollarWallet += transactionAmount;s
       // accountOwner.DollarWallet -= transactionAmount;
-       console.log(`This is beneficiary's new balance: ${beneficiary.DollarWallet}`)
-       console.log(`This is sender's new balance: ${accountOwner.DollarWallet}`)
+       console.log(`This is beneficiary's new balance: ${beneficiaryWallet}`)
+       console.log(`This is sender's new balance: ${senderWallet}`)
+      //  console.log(`This is beneficiary's new balance(naira): ${beneficiary.NairaWallet}`)
 
       
       const transactionDetails = {

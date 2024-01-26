@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv'
 import { type Request, type Response, type NextFunction } from 'express'
-import { CustomRequest } from '../repository/userDataType';
+// import { CustomRequest } from '../repository/userDataType';
 import {verify} from "jsonwebtoken";
 dotenv.config();
 
