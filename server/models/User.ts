@@ -1,7 +1,4 @@
 import mongoose, { Schema } from 'mongoose'
-// import validator from 'validator'
-
-// TODO generate user account number - unique, 10 digits
 
 const userSchema = new Schema({
   firstname: {
@@ -62,8 +59,10 @@ const userSchema = new Schema({
   updatedAt: {
     type: Date,
     default: () => Date.now()
-  }
+  },
+  
 })
+
 
 // export default UserSchema;
 export default mongoose.model('User', userSchema)
