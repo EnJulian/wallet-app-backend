@@ -1,7 +1,7 @@
 import User from '../models/User'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { Utils, provideResponse, ErrorResponseProvider } from '../utils'
+import { Utils, ErrorResponseProvider } from '../utils'
 import { type UserDataType } from '../interfaces/userDataType'
 import config from '../config/env/index'
 import { Request, Response } from 'express'
@@ -20,7 +20,7 @@ import { Request, Response } from 'express'
  * @param phonenumber
  */
 
-export const createNewUser = async (
+export const registerNewUser = async (
   firstname: string,
   surname: string,
   othernames: string,
@@ -109,7 +109,7 @@ export const loginUser = async (email: string, password: string ) => {
     options
   )
 
-  return provideResponse(
+  return Utils.provideResponse(
     200,
     'success',
     'login success',

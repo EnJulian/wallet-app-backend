@@ -1,5 +1,5 @@
 import { type NextFunction, type Request, type Response } from 'express'
-import { createNewUser, loginUser  } from '../services/user.service'
+import { loginUser, registerNewUser } from '../services/user.service'
 
 /**
  * register new wallet customer
@@ -11,6 +11,7 @@ import { createNewUser, loginUser  } from '../services/user.service'
  * @param {NextFunction} next
  * @returns JSON object as response data
  */
+
 
 export const createWalletUser = async (
   req: Request,
@@ -27,7 +28,7 @@ export const createWalletUser = async (
       phonenumber
     } = req.body
 
-    const data = await createNewUser(
+    const data = await registerNewUser(
       firstname,
       surname,
       othernames,

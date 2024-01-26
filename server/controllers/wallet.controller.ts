@@ -1,6 +1,11 @@
 import { type NextFunction, type Request, type Response } from 'express'
-import { fetchWalletBalance, depositFunds, transferFunds } from '../services/wallet.service'
-
+import { 
+  fetchWalletBalance, 
+  depositFunds, 
+  transferFunds, 
+  fetchAccountSummary 
+} from '../services/wallet.service'
+import { fetchTransactionHistory } from '../services/wallet.service'
 
 
 export const walletBalance = async (
@@ -36,7 +41,15 @@ export const fundWallet = async (
 ) => {
   try {
     const { accountNumber, amount, wallet } = req.body
-    const result = await depositFunds(accountNumber, amount, wallet)
+
+    let transactionType;
+
+    const result = await depositFunds(
+      accountNumber, 
+      amount, 
+      wallet, 
+      transactionType = 'Wallet Deposit'
+      )
     return res.status(result.code).json(result)
   } catch (error) {
     next(error)
@@ -63,10 +76,60 @@ export const transferWalletFunds = async (
   try {
     const { 
       senderAccountNumber,
-      receiverAccountNumber,
-      wallet, 
-      amount } = req.body
-    const result = await transferFunds( senderAccountNumber, receiverAccountNumber, wallet, amount)
+      receiverAccountNumber, 
+      amount, 
+      wallet } = req.body
+  
+      let transactionType;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const result = await transferFunds(
+      amount, 
+      senderAccountNumber, 
+      receiverAccountNumber, 
+      transactionType = 'Wallet Transfer', 
+      wallet
+      )
+    return res.status(result!.code).json(result)
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const accountSummary = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+
+    const { accountNumber } = req.body
+
+    const result = await fetchAccountSummary(accountNumber)
+    return res.status(result.code).json(result)
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+
+export const transactionHistory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+
+    const { accountNumber } = req.body
+
+    const page = Number(req.query.page) || 0
+    const limit  = Number(req.query.limit) || 5
+
+    
+
+    const result = await fetchTransactionHistory(accountNumber, page, limit)
     return res.status(result.code).json(result)
   } catch (error) {
     next(error)

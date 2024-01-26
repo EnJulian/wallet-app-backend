@@ -6,20 +6,30 @@ import { validateUserSignUpInput ,validateLoginInput } from '../middlewares/vali
 import { authenticate } from '../middlewares/pin.middleware'
 import { checkToken } from '../middlewares/authentication.middleware'
 import { validateFundWalletFundInputs, validateTransferFundsInputs } from '../middlewares/validator.middleware'
-import { walletBalance, fundWallet, transferWalletFunds } from '../controllers/wallet.controller'
+
+import { 
+    walletBalance, 
+    fundWallet, 
+    transferWalletFunds,
+    accountSummary, 
+    transactionHistory 
+} from '../controllers/wallet.controller'
 import { createPin } from '../services/user.service'
 
 
 const router = express.Router()
 
- router.post('/signup', validateUserSignUpInput, createWalletUser)
+router.post('/signup', validateUserSignUpInput, createWalletUser)
 
 router.post('/login', validateLoginInput, loginWalletUser)
 router.post('/forgot-password', forgotPassword)
 router.post('/reset-password', resetPassword)
 
-router.get('/balance', walletBalance)
+router.get('/balance', checkToken, walletBalance)
 router.patch('/fund', checkToken, validateFundWalletFundInputs,fundWallet)
 router.patch('/transfer', checkToken, validateTransferFundsInputs, transferWalletFunds)
+
+router.get('/home',checkToken, accountSummary)
+router.get('/transactions',checkToken, transactionHistory)
 router.post('/createPin', authenticate, createPin)
 export default router
