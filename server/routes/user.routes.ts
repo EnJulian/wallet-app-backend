@@ -9,7 +9,7 @@ import { walletBalance, fundWallet, transferWalletFunds } from '../controllers/w
 
 const router = express.Router()
 
- router.post('/signup', validateUserSignUpInput, createWalletUser)
+router.post('/signup', validateUserSignUpInput, createWalletUser)
 
 router.post('/login', validateLoginInput, loginWalletUser)
 
