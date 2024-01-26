@@ -75,7 +75,7 @@ export const loginUser = async (email: string, password: string ) => {
   const registeredUser = await User.findOne({ email }).exec()
 
   // if the user is not registered throw an error
-  if (registeredUser === null) {
+  if (!registeredUser) {
     throw new ErrorResponseProvider(
       400,
       'failed',

@@ -69,10 +69,11 @@ export const getTransactionHistory = async (accountNumber: string, page: number,
   
      {
       $project: {
-      "status": 1,
-      "amount": 1,
-      "transactionType": 1, 
-      "createdAt": 1,
+            "status": 1,
+            "amount": 1,
+            "wallet": 1,
+            "transactionType": 1,
+            "createdAt": 1,
      }
      },
       {
