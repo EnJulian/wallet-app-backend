@@ -6,6 +6,8 @@ import { validateUserSignUpInput ,validateLoginInput } from '../middlewares/vali
 import { authenticate } from '../middlewares/pin.middleware'
 import { checkToken } from '../middlewares/authentication.middleware'
 import { validateFundWalletFundInputs, validateTransferFundsInputs } from '../middlewares/validator.middleware'
+import { getTransactions } from '../controllers/filter.controller'
+import {searchUsers} from '../controllers/filter.controller'
 
 import { 
     walletBalance, 
@@ -26,6 +28,8 @@ router.post('/forgot-password', forgotPassword)
 router.post('/reset-password', resetPassword)
 
 router.get('/balance', checkToken, walletBalance)
+router.get('/filter', getTransactions)
+router.get('/search',searchUsers)
 router.patch('/fund', checkToken, validateFundWalletFundInputs,fundWallet)
 router.patch('/transfer', checkToken, validateTransferFundsInputs, transferWalletFunds)
 
