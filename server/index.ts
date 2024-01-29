@@ -1,29 +1,3 @@
-// import express, { Express, Request, Response } from 'express'
-
-// import mongoose from 'mongoose'
-// import config from './config'
-// const app = express()
-
-// app.get('/', (req, res) => {
-//   console.log('Welcome Message')
-// })
-
-// app.use((req, res) => res.status(404).json({
-//   message: 'Not found'
-// }))
-
-// const PORT: number = config.PORT as unknown as number || 8000
-// mongoose.connect(config.MONGO_DB!)
-//   .then(() => {
-//     app.listen(PORT, () => {
-//       console.log('Mongo DB connected Successfully')
-//       console.log(`Server started on http://localhost:${PORT}`)
-//     })
-//   }).catch((err: any) => {
-//     console.log(err)
-//     process.exit(1)
-//   })
-
 import ap1Version1 from './config/versioning/v1'
 import router from './routes/user.routes'
 
@@ -36,7 +10,6 @@ import express from 'express'
 
 import connectDB from './config/database.config'
 
-// require('./config/database.config')
 
 const app = express()
 const PORT = process.env.PORT === null ? 5000 : process.env.PORT

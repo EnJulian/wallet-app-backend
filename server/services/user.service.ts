@@ -2,7 +2,7 @@ import User from '../models/User'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { Utils, ErrorResponseProvider } from '../utils'
-import { type UserDataType } from '../interfaces/userDataType'
+import { UserDataType, CustomRequest } from '../interfaces'
 import config from '../config/env/index'
 import { Request, Response } from 'express'
 
@@ -31,7 +31,7 @@ export const registerNewUser = async (
   // check if the email exists in the db
   const duplicate = await User.findOne({ email }).exec()
   // if duplicate is not empty
-  // throw error
+  // return response
   if (duplicate !== null) {
     throw new ErrorResponseProvider(
       409,
@@ -40,8 +40,9 @@ export const registerNewUser = async (
     )
   }
 
-  // encrypt the password
-  const hashedPwd = await bcrypt.hash(password, 10)
+  // encrypt the password with a new salt
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPwd = await bcrypt.hash(password, salt)
 
   // get accountNumber
   const accountNumber: string = Utils.accountNumbers()
@@ -57,15 +58,12 @@ export const registerNewUser = async (
     accountNumber
   }
 
-
   const createUserResult = await User.create(newWalletUser)
 
   return {
     code: 201,
     status: 'success',
-    message: 'wallet user created',
-    data: createUserResult 
-
+    message: 'wallet user created'
   }
 }
 
@@ -86,7 +84,7 @@ export const loginUser = async (email: string, password: string ) => {
   // Compare user passwords
   const { password: dbPassword, _id, accountNumber } = registeredUser
 
-  const userPassword = bcrypt.compareSync(password, dbPassword)
+  const userPassword = await bcrypt.compare(password, dbPassword);
   if (!userPassword) {
     return {
       code: 401,
@@ -96,7 +94,7 @@ export const loginUser = async (email: string, password: string ) => {
   }
 
   const options = {
-    expiresIn: '1d'
+    expiresIn: process.env.JWT_EXPIRATION_TIME
   }
 
   // create token for authentication
@@ -123,15 +121,10 @@ export const loginUser = async (email: string, password: string ) => {
 }
 
 export const createPin = async (req: Request, res: Response) => {
-  const {pin}= req.body
-  const parsedPin = parseInt(pin, 10);
+  const { pin } = req.body;
+  const pinRegex = /^\d{4}$/;
 
-  if (
-    isNaN(parsedPin) || // Check if the parsed value is NaN (not a number)
-    parsedPin < 0 || // Check if the parsed value is a negative number
-    parsedPin >= 10000 || // Check if the parsed value is greater than or equal to 10000
-    pin.length !== 4 // Check if the length of the original pin is not 4
-  ) {
+  if (!pinRegex.test(pin)) {
     return res.status(400).json({
       message: "PIN must be a string containing a 4-digit number",
       status: "error",

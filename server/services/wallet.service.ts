@@ -1,36 +1,35 @@
-import { getWalletBalance, updateWalletBalance } from '../queries/wallet.queries'
 import { Utils } from '../utils'
 import { WalletType } from '../interfaces'
 import User from '../models/User'
 import Transactions from '../models/Transactions'
-import { getAccountSummary, getTransactionHistory } from '../queries/transactions.queries'
 
 export const fetchWalletBalance = async (accountNumber: string) => {
 
   // TODO check if logged in/ token
 
-  const currentWalletBalance = await getWalletBalance(accountNumber)
+  let currentWalletBalance;
+  try {
+    currentWalletBalance = await Utils.getWalletBalance(accountNumber);
+  } catch (error) {
+    return Utils.provideResponse(500, 'error', 'failed to fetch wallet balance', {});
+  }
 
-  return Utils.provideResponse(200, 'success', 'current account balance', currentWalletBalance)
+  if (!currentWalletBalance) {
+    return Utils.provideResponse(404, 'error', 'wallet balance not found', currentWalletBalance);
+  }
+
+  return Utils.provideResponse(200, 'success', 'current account balance', currentWalletBalance);
+
 }
-
-/**
- * deposit funds to wallet
- * @date 1/15/2024 - 9:50:35 AM
- *
- * @async
- * @param 
- * @returns JSON object as response data
- */
 
 export const depositFunds = async ( accountNumber: string, amount: number, wallet: string, transactionType: string ) => {
 
-  const walletCurrentBalance = await getWalletBalance(accountNumber)
+  const walletCurrentBalance = await Utils.getWalletBalance(accountNumber)
 
   if (wallet === 'dollar') {
     const { dollars } = walletCurrentBalance
     const newAmount: number = dollars + amount
-    const updateBalance = await updateWalletBalance(accountNumber, WalletType.dollar, newAmount)
+    const updateBalance = await Utils.updateWalletBalance(accountNumber, WalletType.dollar, newAmount)
 
     if (updateBalance){
       const depositFundTransaction = {
@@ -63,7 +62,7 @@ export const depositFunds = async ( accountNumber: string, amount: number, walle
   if (wallet === 'naira'){
     const { naira } = walletCurrentBalance
     const newAmount: number = naira + amount
-    const updateBalance = await updateWalletBalance(accountNumber, WalletType.naira, newAmount)
+    const updateBalance = await Utils.updateWalletBalance(accountNumber, WalletType.naira, newAmount)
 
     if (updateBalance){
     const depositFundTransaction = {
@@ -101,8 +100,12 @@ export const depositFunds = async ( accountNumber: string, amount: number, walle
  * @date 1/15/2024 - 9:50:35 AM
  *
  * @async
- * @param {Request} req
  * @returns JSON object as response data
+ * @param amount
+ * @param senderAccountNumber
+ * @param receiverAccountNumber
+ * @param transactionType
+ * @param wallet
  */
 
 export const transferFunds = async (
@@ -110,112 +113,78 @@ export const transferFunds = async (
   senderAccountNumber: string,
   receiverAccountNumber: string, 
   transactionType: string,
-  wallet: string) => {
+  wallet: string
+) => {
 
   // TODO check if the receiver exists in db before transaction
-  const receiverExits = await User.findOne({ accountNumber: receiverAccountNumber })
-  if(!receiverExits){
+  const receiverExists = await User.findOne({ accountNumber: receiverAccountNumber })
+  if (!receiverExists) {
     return Utils.provideResponse(400, 'error', 'invalid account', {})
   }
-      const senderCurrentBalance = await getWalletBalance(senderAccountNumber)
-      const receiverCurrentBalance = await getWalletBalance(receiverAccountNumber)
 
-      if (wallet === 'dollar') {
-        
-          const { dollars } = senderCurrentBalance
-          if (amount > dollars) {
-            return Utils.provideResponse(400, 'error', 'insufficient funds', {})
-          }
-            
-            const newReceiverAmount: number = amount + receiverCurrentBalance.dollars
+  const [senderCurrentBalance, receiverCurrentBalance] = await Promise.all([
+    Utils.getWalletBalance(senderAccountNumber),
+    Utils.getWalletBalance(receiverAccountNumber)
+  ])
 
-            const newSenderAmount: number = dollars - amount
+  if (wallet === 'dollar') {
+    const { dollars } = senderCurrentBalance
+    if (amount > dollars) {
+      return Utils.provideResponse(400, 'error', 'insufficient funds', {})
+    }
 
+    const newReceiverAmount: number = amount + receiverCurrentBalance.dollars
+    const newSenderAmount: number = dollars - amount
 
-            const updateReceiverBalance = await updateWalletBalance(receiverAccountNumber, WalletType.dollar, newReceiverAmount)
+    const updateReceiverBalance = await Utils.updateWalletBalance(receiverAccountNumber, WalletType.dollar, newReceiverAmount)
+    const updateSenderBalance = await Utils.updateWalletBalance(senderAccountNumber, WalletType.dollar, newSenderAmount)
 
-            const updateSenderBalance = await updateWalletBalance(senderAccountNumber, WalletType.dollar, newSenderAmount)
+    const transferFundTransaction = {
+      userAccountNumber: senderAccountNumber,
+      status: updateReceiverBalance && updateSenderBalance ? 'Successful' : 'Failed',
+      wallet: WalletType.dollar,
+      transactionType: transactionType,
+      amount: amount,
+    }
 
-            if (updateReceiverBalance && updateSenderBalance){
-              
-              const transferFundTransaction = {
-                userAccountNumber: senderAccountNumber,
-                status: 'Successful',
-                wallet: WalletType.dollar,
-                transactionType: transactionType,
-                amount: amount,
-              }
-              
-              await Transactions.create(transferFundTransaction)
-          
-              }else{
-                const transferFundTransaction = {
-                  userAccountNumber: senderAccountNumber,
-                  status: 'Failed',
-                  wallet: WalletType.dollar,
-                  transactionType: transactionType,
-                  amount: amount,
-                }
-                
-                await Transactions.create(transferFundTransaction)
-          
-              }
+    await Transactions.create(transferFundTransaction)
 
-              const transferHistory = {
-                "amount_sent": amount,
-                "current_balance": updateSenderBalance?.dollar
+    const transferHistory = {
+      "amount_sent": amount,
+      "current_balance": updateSenderBalance?.dollar
+    }
 
-              }
-            return Utils.provideResponse(201, 'success', 'funds transfered', transferHistory)
-      }
+    return Utils.provideResponse(201, 'success', 'funds transferred', transferHistory)
+  }
 
-      if (wallet === 'naira') {
+  if (wallet === 'naira') {
+    const { naira } = senderCurrentBalance
+    if (amount > naira) {
+      return Utils.provideResponse(400, 'error', 'insufficient funds', {})
+    }
 
-        const { naira } = senderCurrentBalance
+    const newReceiverAmount: number = amount + receiverCurrentBalance.naira
+    const newSenderAmount: number = naira - amount
 
-        if (amount > naira){
-          return Utils.provideResponse(400, 'error', 'insufficient funds', {})
-        }
-        
-          const newReceiverAmount: number = amount + receiverCurrentBalance.naira
+    const updateReceiverBalance = await Utils.updateWalletBalance(receiverAccountNumber, WalletType.naira, newReceiverAmount)
+    const updateSenderBalance = await Utils.updateWalletBalance(senderAccountNumber, WalletType.naira, newSenderAmount)
 
-          const newSenderAmount: number = naira - amount
+    const transferFundTransaction = {
+      userAccountNumber: senderAccountNumber,
+      status: updateReceiverBalance && updateSenderBalance ? 'Successful' : 'Failed',
+      wallet: WalletType.naira,
+      transactionType: transactionType,
+      amount: amount,
+    }
 
+    await Transactions.create(transferFundTransaction)
 
-          const updateReceiverBalance = await updateWalletBalance(receiverAccountNumber, WalletType.naira, newReceiverAmount)
+    const transferHistory = {
+      "amount_sent": amount,
+      "current_balance": updateSenderBalance?.naira
+    }
 
-          const updateSenderBalance = await updateWalletBalance(senderAccountNumber, WalletType.naira, newSenderAmount)
-
-          if (updateReceiverBalance && updateSenderBalance){
-            const transferFundTransaction = {
-              userAccountNumber: senderAccountNumber,
-              status: 'Successful',
-              wallet: WalletType.naira,
-              transactionType: transactionType,
-              amount: amount,
-            }
-            
-            await Transactions.create(transferFundTransaction)
-        
-            }else{
-              const transferFundTransaction = {
-                userAccountNumber: senderAccountNumber,
-                status: 'Failed',
-                wallet: WalletType.naira,
-                transactionType: transactionType,
-                amount: amount,
-              }
-              
-              await Transactions.create(transferFundTransaction)
-        
-            }
-            const transferHistory = {
-              "amount_sent": amount,
-              "current_balance": updateSenderBalance?.naira
-
-            }
-
-            return Utils.provideResponse(201, 'success', 'funds transfered', transferHistory)
+    return Utils.provideResponse(201, 'success', 'funds transferred', transferHistory)
   }
 }
 
@@ -224,7 +193,7 @@ export const transferFunds = async (
 export const fetchAccountSummary = async (accountNumber: string) => {
 
   // TODO check if logged in/ token
-  const transactionHistory = await getAccountSummary(accountNumber)
+  const transactionHistory = await Utils.getAccountSummary(accountNumber)
 
   return Utils.provideResponse(200, 'success', 'account summary', transactionHistory)
 }
@@ -235,7 +204,7 @@ export const fetchAccountSummary = async (accountNumber: string) => {
 export const fetchTransactionHistory = async (accountNumber: string, page: number, limit: number) => {
 
   // TODO check if logged in/ token
-  const transactionHistory = await getTransactionHistory(accountNumber, page, limit)
+  const transactionHistory = await Utils.getTransactionHistory(accountNumber, page, limit)
 
   return Utils.provideResponse(200, 'success', 'transaction history', transactionHistory)
 }

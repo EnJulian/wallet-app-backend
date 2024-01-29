@@ -6,25 +6,30 @@ import {
   fetchAccountSummary 
 } from '../services/wallet.service'
 import { fetchTransactionHistory } from '../services/wallet.service'
+import { Utils } from '../utils'
 
 
 export const walletBalance = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
 ) => {
   try {
-    const { accountNumber } = req.body
-    const result = await fetchWalletBalance(accountNumber)
-    return res.status(result.code).json(result)
+    const { accountNumber } = req.body;
+    const result = await fetchWalletBalance(accountNumber);
+    const { status, message, code, data } = result;
+    Utils.responseProvider(res, status, message, code);
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
+
+
+
 
 
 /**
- * deposite money into account
+ * deposit money into account
  * @date 1/18/2024 - 23:17:55 pM
  *
  * @async

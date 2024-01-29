@@ -9,29 +9,25 @@ import User from "../models/User"
 export const getTransactions = async (req: Request, res: Response) => {
   try {
     const filter: any = {};
-     console.log(filter);
 
     if (req.query.transactionType) {
       filter["transactionType"] = req.query.transactionType;
-    console.log(filter.transactionType);
     }
 
-  if (req.query.startDate && req.query.endDate) {
-     filter["CreatedAt"] = {
-         $gte:new Date(req.query.startDate as string),
+    if (req.query.startDate && req.query.endDate) {
+      filter["CreatedAt"] = {
+        $gte: new Date(req.query.startDate as string),
         $lte: new Date(req.query.endDate as string),
       };
-      console.log(filter.date);
     }
 
-  if (req.query.transactionStatus) {
-     filter["transactionStatus"] = req.query.transactionStatus;
-     console.log(filter.transactionStatus);
-     return res.status(200).json({ message: 'Transaction status fetched successfully', status: 'error' });
- }
+    if (req.query.transactionStatus) {
+      filter["transactionStatus"] = req.query.transactionStatus;
+      return res.status(200).json({ message: 'Transactions fetched successfully', status: 'error' });
+    }
 
     const transactions = await Transaction.find(filter);
-    return res.status(200).json({ message: 'Transaction status fetched successfully', status: 'success', data: transactions });
+    return res.status(200).json({ message: 'Transactions fetched successfully', status: 'success', data: transactions });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
