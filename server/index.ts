@@ -28,4 +28,4 @@ app.use(genericErrorHandler)
 app.use(notFound)
 app.use('/api/v1',router)
 
-module.exports = app
+export default app;
