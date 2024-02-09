@@ -27,4 +27,5 @@ router.patch('/transfer', authentication_middleware_1.checkToken, validator_midd
 router.get('/home', authentication_middleware_1.checkToken, wallet_controller_1.accountSummary);
 router.get('/transactions', authentication_middleware_1.checkToken, wallet_controller_1.transactionHistory);
 router.post('/createPin', pin_middleware_1.authenticate, user_service_1.createPin);
+router.get('/health', (req, res) => res.status(200).json());
 exports.default = router;

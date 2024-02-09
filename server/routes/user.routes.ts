@@ -36,4 +36,8 @@ router.patch('/transfer', checkToken, validateTransferFundsInputs, transferWalle
 router.get('/home',checkToken, accountSummary)
 router.get('/transactions',checkToken, transactionHistory)
 router.post('/createPin', authenticate, createPin)
+
+
+router.get('/health', (req, res) => res.status(200).json())
+
 export default router

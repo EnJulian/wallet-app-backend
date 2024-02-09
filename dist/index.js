@@ -21,4 +21,4 @@ app.use(error_middleware_1.appErrorHandler);
 app.use(error_middleware_1.genericErrorHandler);
 app.use(error_middleware_1.notFound);
 app.use('/api/v1', user_routes_1.default);
-module.exports = app;
+exports.default = app;
