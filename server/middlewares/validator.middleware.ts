@@ -29,9 +29,9 @@ export const validateUserSignUpInput = (req: Request, res: Response, next: NextF
     if (typeof surname !== 'string' || (surname === '')) {
       return Utils.responseProvider(res, 'error','provide a valid surname', 400)
     }
-    if (typeof othernames !== 'string') {
-      return Utils.responseProvider(res,'error', 'provide valid othernames', 400)
-    }
+    // if (typeof othernames !== 'string') {
+    //   return Utils.responseProvider(res,'error', 'provide valid othernames', 400)
+    // }
 
     if (!validator.isEmail(email)) {
       return Utils.responseProvider(res, 'error', 'invalid email and password', 400)
