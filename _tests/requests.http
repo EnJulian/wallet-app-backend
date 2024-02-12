@@ -1,4 +1,4 @@
-﻿GET http://localhost:5000/api/v1/wallet/health
+﻿GET https://walletapp-z0wo.onrender.com/api/v1/wallet/health
 
 {
 }
