@@ -31,6 +31,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/chai": "^4.3.10",
     "@types/chai-http": "^4.2.0",
+    "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/mocha": "^10.0.6",
     "@types/nodemailer": "^6.4.14",
