@@ -5,7 +5,7 @@ import  User  from '../models/User';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import config from '../config/env';
-//import nodemailer from 'nodemailer';
+
 
 
 export const forgotPassword = async (req: Request, res: Response): Promise<any> => {
@@ -31,13 +31,11 @@ export const forgotPassword = async (req: Request, res: Response): Promise<any> 
         status: 'error',
       });
     }
-
-    // Converting the token to a hex string
-    // const convertTokenToHexString = generatedToken.toString('hex');
+    
 
     // Set the token and expiring period for the token in the client schema
     client.resetToken = token;
-    // client.expireToken = (Date.now() + 600000) as unknown as string; // 1 minutes
+    
 
     // save the newly generated token in the database
     try {
@@ -46,7 +44,6 @@ export const forgotPassword = async (req: Request, res: Response): Promise<any> 
         message: 'Add your client URL that handles reset password',
         data: {
           resetToken: saveToken.resetToken,
-          // expireToken: saveToken.expireToken,
         },
         status: 'success',
       });

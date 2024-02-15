@@ -17,6 +17,7 @@ import {
     transactionHistory 
 } from '../controllers/wallet.controller'
 import { createPin } from '../services/user.service'
+import { sendCustomizedEmail } from "../services/emailsender";
 
 
 const router = express.Router()
@@ -26,6 +27,8 @@ router.post('/signup', validateUserSignUpInput, createWalletUser)
 router.post('/login', validateLoginInput, loginWalletUser)
 router.post('/forgot-password', forgotPassword)
 router.post('/reset-password', resetPassword)
+router.post('/send-email', sendCustomizedEmail)
+
 
 router.get('/balance', checkToken, walletBalance)
 router.get('/filter', getTransactions)

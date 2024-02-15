@@ -1,0 +1,1 @@
+{"version":3,"sources":["emailsender.js"],"names":[],"mappings":";;AAAA;;AACA;;AACA","sourcesContent":["import { Request, Response } from \"express\";\r\nimport nodemailer from \"nodemailer\";\r\nimport Mailgen from \"mailgen\";\r\n\r\n"],"file":"emailsender.dev.js"}
