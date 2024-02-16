@@ -11,9 +11,9 @@ const environment = {
 type EnvironmentObjectKey = keyof typeof environment
 
 const currentEnvironment = process.env.NODE_ENV as EnvironmentObjectKey
-console.log(currentEnvironment);
+// console.log(currentEnvironment);
 
-// TODO get the node env from the object
+// get the node env from the object
 const config = environment[currentEnvironment]
-console.log(config);
+
 export default config

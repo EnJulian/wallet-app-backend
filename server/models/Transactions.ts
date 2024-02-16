@@ -1,13 +1,14 @@
 
 import mongoose, { Schema } from "mongoose";
+import User from "./User";
 
 const transactionStatus: string[] = ["Successful", "Failed"];
 const walletType: string[] = ["NairaWallet", "DollarWallet"];
 const transactionType: string[] = ["Wallet Transfer", "Wallet Deposit"];
 
 const transactionSchema = new Schema({
-  userAccountNumber: {
-    type: String,
+  userId: {
+    type: Schema.ObjectId, ref: User,
     require: true,
   },
   status: {

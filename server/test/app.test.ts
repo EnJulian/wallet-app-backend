@@ -17,7 +17,7 @@ describe("Testing Express Endpoints", () => {
       .request(app)
       .post("/api/v1/wallet/signup")
       .send(registerNewUser);
-    console.log(response.body);
+
     expect(response.status).to.equal(409);
     // Additional assertions can be added based on your specific use case
     // For example, you might want to check the response body or headers
