@@ -1,5 +1,5 @@
 import { Utils } from '../utils'
-import { WalletType } from '../interfaces'
+import { WalletType, Transaction } from '../interfaces'
 import bcrypt from 'bcrypt'
 import User from '../models/User'
 import Transactions from '../models/Transactions'
@@ -103,8 +103,6 @@ export const verifyPin = (pin: string, transactionPin: string) => {
 
   const validatePin = bcrypt.compareSync(pin, transactionPin)
 
-  console.log("validate", validatePin)
-
   if (!validatePin) {
       throw {
           code: 400,
@@ -138,18 +136,16 @@ export const transferFunds = async (
   wallet: string,
   pin: string
 ) => {
+  const _id = userId
 
-  // const fetchPin = await User.findOne({ pin })
-  // // TODO verify pin, 
-  // console.log("fetch pin ", fetchPin!.pin)
+  const fetchPin = await User.findOne({ _id })
+  
+  // TODO verify pin, 
+  if(!fetchPin?.pin){
+    return Utils.provideResponse(400, 'error', 'invalid pin', {})
+  }
 
-  // if(!fetchPin?.pin){
-  //   return Utils.provideResponse(400, 'error', 'invalid pin', {})
-  // }
-
-
-
-  // verifyPin(pin, fetchPin.pin)
+  verifyPin(pin, fetchPin?.pin)
 
 
   const receiverExists = await User.findOne({ accountNumber: receiverAccountNumber })
@@ -227,9 +223,9 @@ export const transferFunds = async (
 
 export const fetchAccountSummary = async (userId: string) => {
 
-  const transactionHistory = await Utils.getAccountSummary(userId)
+  const accountSummary = await Utils.getAccountSummary(userId)
 
-  return Utils.provideResponse(200, 'success', 'account summary', transactionHistory)
+  return Utils.provideResponse(200, 'success', 'account summary', {... { ...accountSummary[0] } })
 }
 
 
@@ -237,9 +233,13 @@ export const fetchAccountSummary = async (userId: string) => {
 
 export const fetchTransactionHistory = async (userId: string, page: number, limit: number) => {
 
+  // const transactionHistory: unknown = await Utils.getTransactionHistory(userId, page, limit)
+
+  // const returnData = Utils.formatTransactionHistory(transactionHistory as Transaction)
+
   const transactionHistory = await Utils.getTransactionHistory(userId, page, limit)
 
-  return Utils.provideResponse(200, 'success', 'transaction history', transactionHistory)
+  return Utils.provideResponse(200, 'success', 'transaction history',  {... {... transactionHistory } } )
 }
 
 

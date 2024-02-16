@@ -1,5 +1,5 @@
 ﻿// utils.ts
-import { WalletType, TransactionStatus } from '../interfaces'
+import { WalletType, Transaction } from '../interfaces'
 import Transactions from '../models/Transactions'
 import { type Response } from 'express'
 import User from "../models/User";
@@ -132,8 +132,7 @@ export class Utils {
             }
         ])
 
-
-        return transactionHistory
+        return { ... transactionHistory }
     }
 
     static getTransactionHistory = async (userId: string, page: number, limit: number) => {
@@ -167,7 +166,7 @@ export class Utils {
                             }
                         },
                     ],
-                    data: [{ $skip: (page - 1) * limit }, { $limit: limit}]
+                    transactions: [{ $skip: (page - 1) * limit }, { $limit: limit}]
                 }
             },
         ])
@@ -202,8 +201,23 @@ export class Utils {
             data
         }
     }
-    
+
+
+    static formatTransactionHistory = (transaction: Transaction) => {
+
+        const { code, status, message } = transaction
+        const {metadata, transactions } = transaction.data[0]
+        const transactionDetails = { ...{...transactions } }
+        
+        const transactionHistory = {
+            code, status, message,
+            metadata, transactionDetails
+        }
+        return transactionHistory
+    }
+
 }
+
 
 export class ErrorResponseProvider extends Error {
     code: number

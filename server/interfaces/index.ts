@@ -1,4 +1,4 @@
-﻿import { TransactionStatus, WalletType, FundDataType, TransferDataType, }
+﻿import { TransactionStatus, WalletType, FundDataType, TransferDataType, Transaction }
   from "./transactionsDataType";
 
 import { CustomRequest }
@@ -8,4 +8,4 @@ import { UserDataType }
   from "./userDataType"
 
 
-export { TransactionStatus, WalletType, FundDataType, TransferDataType, CustomRequest, UserDataType };
+export { TransactionStatus, WalletType, FundDataType, TransferDataType, CustomRequest, UserDataType, Transaction };

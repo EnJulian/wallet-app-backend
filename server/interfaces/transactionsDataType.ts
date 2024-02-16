@@ -22,3 +22,16 @@ export interface TransferDataType {
   senderAccountNumber: string;
   receiverAccountNumber: string;
 }
+
+
+export interface Transaction{
+  "code": number,
+  "status": string,
+  "message": string,
+  "data": {
+    "0": {
+      "metadata": [],
+      "transactions": []
+    }
+  }
+}
