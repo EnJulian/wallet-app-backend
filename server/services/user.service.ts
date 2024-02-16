@@ -126,7 +126,7 @@ export const createPin = async (req: Request, res: Response) => {
 
   if (!pinRegex.test(pin)) {
     return res.status(400).json({
-      message: "PIN must be a string containing a 4-digit number",
+      message: "invalid pin. kindly enter a valid pin",
       status: "error",
     });
   }
@@ -136,7 +136,6 @@ export const createPin = async (req: Request, res: Response) => {
   await User.updateOne({_id: userData._id}, {pin: hashedPin})
   const result= await User.findOne({_id: userData._id}) 
   
-  return res.status(200).json(result)
+  return res.status(200).json(result!.email)
 };
-
 

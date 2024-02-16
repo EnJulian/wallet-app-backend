@@ -1,8 +1,9 @@
 ﻿// utils.ts
-import { WalletType, TransactionStatus } from '../interfaces'
+import { WalletType, Transaction } from '../interfaces'
 import Transactions from '../models/Transactions'
 import { type Response } from 'express'
 import User from "../models/User";
+import mongoose from 'mongoose';
 
 
 // Class for storing generic functions to be used in the entire code
@@ -21,8 +22,23 @@ export class Utils {
         return randomNumberArray.join('');
     }
 
+    // fetch user account number 
+    static fetchUserAccountDetails = async(_id: string) => {
+        const userAccountNumber = await User.findOne({ _id })
+        return userAccountNumber
+
+    }
+
     // Wallet Functions
-    static  getWalletBalance = async (accountNumber: string) => {
+    static  getWalletBalance = async (_id: string) => {
+        const walletBalance = await User.findOne({ _id })
+        const dollars = walletBalance!.DollarWallet
+        const naira = walletBalance!.NairaWallet
+        return { dollars, naira }
+
+    }
+
+    static  getWalletBalanceByAccountNumber = async (accountNumber: string) => {
         const walletBalance = await User.findOne({ accountNumber })
         const dollars = walletBalance!.DollarWallet
         const naira = walletBalance!.NairaWallet
@@ -31,6 +47,28 @@ export class Utils {
     }
 
     static updateWalletBalance = async (
+        _id: string,
+        accountType: WalletType,
+        amount: number) => {
+
+        const filter = { _id }
+
+        // use dynamic key
+        // const updateValue: Record<WalletType, string> = {}
+
+        if (accountType === 'DollarWallet') {
+            const updatedUserWallet = await User.findOneAndUpdate(filter, { DollarWallet: amount }, { new: true })
+            return { "dollar": updatedUserWallet!.DollarWallet }
+        }
+
+        if (accountType === 'NairaWallet') {
+            const updatedUserWallet = await User.findOneAndUpdate(filter, { NairaWallet: amount }, { new: true })
+            return { "naira": updatedUserWallet!.NairaWallet }
+        }
+    }
+    
+
+    static updateWalletBalanceByAccountNumber = async (
         accountNumber: string,
         accountType: WalletType,
         amount: number) => {
@@ -51,21 +89,30 @@ export class Utils {
         }
     }
     
+
+    // convert _id to ObjectId
+    static convertUserId = (userId: string) => {
+        const matchId = new mongoose.Types.ObjectId(userId)
+        return matchId
+    }
+
     // Fetch queries
-    static getAccountSummary = async (accountNumber: string) => {
+    static getAccountSummary = async (userId: string) => {
+
+        const id = Utils.convertUserId(userId)
 
         const transactionHistory = await User.aggregate([
 
             {$match: {
-                    accountNumber: accountNumber
+                    "_id": id
                 }
             },
             {
                 $lookup:
                     {
                         from: "transactions",
-                        localField: "accountNumber",
-                        foreignField: "userAccountNumber",
+                        localField: "_id",
+                        foreignField: "userId",
                         as: "summary",
                     }
             },
@@ -85,16 +132,17 @@ export class Utils {
             }
         ])
 
-
-        return transactionHistory
+        return { ... transactionHistory }
     }
 
-    static getTransactionHistory = async (accountNumber: string, page: number, limit: number) => {
+    static getTransactionHistory = async (userId: string, page: number, limit: number) => {
+        
+        const id = Utils.convertUserId(userId)
 
         const transactionHistory = await Transactions.aggregate([
             {
                 $match: {
-                    userAccountNumber: accountNumber
+                    userId: id
                 }
             },
 
@@ -114,11 +162,11 @@ export class Utils {
                         {
                             $addFields:{
                                 pageNumber: page,
-                                // remainingPages: { $ceil: {$divide:["$totalTransactions", limit]} }
+                                remainingPages: { $ceil: {$divide:["$totalTransactions", limit]} }
                             }
                         },
                     ],
-                    data: [{ $skip: (page - 1) * limit }, { $limit: limit}]
+                    transactions: [{ $skip: (page - 1) * limit }, { $limit: limit}]
                 }
             },
         ])
@@ -131,9 +179,11 @@ export class Utils {
         res: Response,
         status: string,
         message: string,
-        code: number
+        code: number,
+         // eslint-disable-next-line @typescript-eslint/ban-types
+        data: Object
     ) => {
-        return res.status(code).json({ status, code, message })
+        return res.status(code).json({ status, code, message, data })
     }
         
 
@@ -151,8 +201,23 @@ export class Utils {
             data
         }
     }
-    
+
+
+    static formatTransactionHistory = (transaction: Transaction) => {
+
+        const { code, status, message } = transaction
+        const {metadata, transactions } = transaction.data[0]
+        const transactionDetails = { ...{...transactions } }
+        
+        const transactionHistory = {
+            code, status, message,
+            metadata, transactionDetails
+        }
+        return transactionHistory
+    }
+
 }
+
 
 export class ErrorResponseProvider extends Error {
     code: number

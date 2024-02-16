@@ -28,15 +28,15 @@ router.post('/forgot-password', forgotPassword)
 router.post('/reset-password', resetPassword)
 router.post("/send-email", sendCustomizedEmail);
 
-router.get('/balance', checkToken, walletBalance)
+router.get('/account-balance', checkToken, walletBalance)
 router.get('/filter', getTransactions)
 router.get('/search',searchUsers)
-router.patch('/fund', checkToken, validateFundWalletFundInputs,fundWallet)
-router.patch('/transfer', checkToken, validateTransferFundsInputs, transferWalletFunds)
+router.patch('/deposit-funds', checkToken, validateFundWalletFundInputs,fundWallet)
+router.patch('/transfer-funds', checkToken, validateTransferFundsInputs, transferWalletFunds)
 
-router.get('/home',checkToken, accountSummary)
-router.get('/transactions',checkToken, transactionHistory)
-router.post('/createPin', authenticate, createPin)
+router.get('/account-summary',checkToken, accountSummary)
+router.get('/transactions-history',checkToken, transactionHistory)
+router.post('/create-pin', authenticate, createPin)
 
 
 router.get('/health', (req, res) => res.status(200).json())

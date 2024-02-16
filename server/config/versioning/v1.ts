@@ -8,7 +8,6 @@ api.get('/', (req: Request, res: Response) => res.status(200).json({
   message: 'Welcome to Wallet API'
 }))
 
-// TODO create wallet user api
 api.use('/wallet', user)
 
 export default api

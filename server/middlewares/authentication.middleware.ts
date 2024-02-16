@@ -7,6 +7,9 @@ import config from '../config/env/index'
 
 const SECRET = config.JWT_SECRET_KEY
 
+
+
+
 export const checkToken = (req: Request, res: Response, next: NextFunction) => {
   try {
     const { authorization } = req.headers
@@ -34,10 +37,22 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
       })
     }
 
+    const userId = walletOwner._id
+    // assign user id to request 
+    Object.assign(req, { userId })
   }
 
    next()
   } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({
+        status: 'error',
+        code: 401,
+        message: 'kindly logged in!',
+        data: null
+      })
+    }
+
     next(error)
   }
 }

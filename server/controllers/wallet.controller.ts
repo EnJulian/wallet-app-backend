@@ -15,10 +15,12 @@ export const walletBalance = async (
     next: NextFunction
 ) => {
   try {
-    const { accountNumber } = req.body;
-    const result = await fetchWalletBalance(accountNumber);
+
+    const userId = (req as any).userId;
+
+    const result = await fetchWalletBalance(userId);
     const { status, message, code, data } = result;
-    Utils.responseProvider(res, status, message, code);
+    Utils.responseProvider(res, status, message, code, data);
   } catch (error) {
     next(error);
   }
@@ -45,12 +47,16 @@ export const fundWallet = async (
   next: NextFunction
 ) => {
   try {
-    const { accountNumber, amount, wallet } = req.body
+
+    const userId = (req as any).userId;
+    
+    const { amount, wallet } = req.body
+
 
     let transactionType;
 
     const result = await depositFunds(
-      accountNumber, 
+      userId ,
       amount, 
       wallet, 
       transactionType = 'Wallet Deposit'
@@ -79,21 +85,27 @@ export const transferWalletFunds = async (
   next: NextFunction
 ) => {
   try {
-    const { 
-      senderAccountNumber,
+
+    const userId = (req as any).userId;
+
+
+    const {
       receiverAccountNumber, 
       amount, 
-      wallet } = req.body
+      wallet,
+      pin // TODO validate pin
+    } = req.body
   
       let transactionType;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const result = await transferFunds(
       amount, 
-      senderAccountNumber, 
+      userId,
       receiverAccountNumber, 
       transactionType = 'Wallet Transfer', 
-      wallet
+      wallet,
+      pin
       )
     return res.status(result!.code).json(result)
   } catch (error) {
@@ -109,9 +121,11 @@ export const accountSummary = async (
 ) => {
   try {
 
-    const { accountNumber } = req.body
 
-    const result = await fetchAccountSummary(accountNumber)
+    const userId = (req as any).userId;
+
+    const result = await fetchAccountSummary(userId)
+
     return res.status(result.code).json(result)
   } catch (error) {
     next(error)
@@ -127,14 +141,14 @@ export const transactionHistory = async (
 ) => {
   try {
 
-    const { accountNumber } = req.body
+    const userId = (req as any).userId;
 
     const page = Number(req.query.page) || 0
     const limit  = Number(req.query.limit) || 5
 
     
 
-    const result = await fetchTransactionHistory(accountNumber, page, limit)
+    const result = await fetchTransactionHistory(userId, page, limit)
     return res.status(result.code).json(result)
   } catch (error) {
     next(error)

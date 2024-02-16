@@ -1,8 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 // import validator from 'validator'
 
-// TODO generate user account number - unique, 10 digits
-
 const userSchema = new Schema({
   firstname: {
     type: String,
