@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { type NextFunction, type Request, type Response } from 'express'
 import { 
   fetchWalletBalance, 
@@ -7,6 +8,7 @@ import {
 } from '../services/wallet.service'
 import { fetchTransactionHistory } from '../services/wallet.service'
 import { Utils } from '../utils'
+import { Transaction } from '../interfaces'
 
 
 export const walletBalance = async (
@@ -146,10 +148,22 @@ export const transactionHistory = async (
     const page = Number(req.query.page) || 0
     const limit  = Number(req.query.limit) || 5
 
+    const result = await fetchTransactionHistory(userId, page, limit)
+
+    const { code, status, message } =  result as Transaction
+
+    const fetchData  =  result["data"]
+
+    const getMetaData = {... fetchData["metadata" as keyof typeof fetchData] }
+
+    const metadata = getMetaData["0" as keyof typeof getMetaData]
+    
+    const transactions = fetchData["transactions" as keyof typeof fetchData]
+
+    const responseData = { code, status, message, metadata, transactions}
     
 
-    const result = await fetchTransactionHistory(userId, page, limit)
-    return res.status(result.code).json(result)
+    return res.status(result.code).json(responseData)
   } catch (error) {
     next(error)
   }

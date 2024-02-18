@@ -1,5 +1,5 @@
 ﻿// utils.ts
-import { WalletType, Transaction } from '../interfaces'
+import { WalletType } from '../interfaces'
 import Transactions from '../models/Transactions'
 import { type Response } from 'express'
 import User from "../models/User";
@@ -202,19 +202,6 @@ export class Utils {
         }
     }
 
-
-    static formatTransactionHistory = (transaction: Transaction) => {
-
-        const { code, status, message } = transaction
-        const {metadata, transactions } = transaction.data[0]
-        const transactionDetails = { ...{...transactions } }
-        
-        const transactionHistory = {
-            code, status, message,
-            metadata, transactionDetails
-        }
-        return transactionHistory
-    }
 
 }
 
