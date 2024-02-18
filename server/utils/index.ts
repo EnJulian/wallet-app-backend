@@ -1,5 +1,5 @@
 ﻿// utils.ts
-import { WalletType } from '../interfaces'
+import { WalletType, Transaction } from '../interfaces'
 import Transactions from '../models/Transactions'
 import { type Response } from 'express'
 import User from "../models/User";
@@ -202,6 +202,34 @@ export class Utils {
         }
     }
 
+    // returns code, status and message 
+    static formatResponseStatus  = (transaction: Transaction) => {
+
+        const { code, status, message } = transaction
+
+        return { code, status, message } 
+    }
+
+      // returns transaction history
+    static formatTransactionHistory = (response: Transaction) => {
+        const fetchData  =  response["data"]
+        const transactions = fetchData["transactions" as keyof typeof fetchData]
+        return { transactions }
+    }
+
+
+    // returns transaction history metadata
+    static formatMetaData = (response: Transaction) => {
+
+        const fetchData  =  response["data"]
+
+        const getMetaData = {... fetchData["metadata" as keyof typeof fetchData] }
+    
+        const metadata = getMetaData["0" as keyof typeof getMetaData]
+    
+        return { metadata }
+        
+    }
 
 }
 

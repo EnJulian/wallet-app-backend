@@ -150,17 +150,18 @@ export const transactionHistory = async (
 
     const result = await fetchTransactionHistory(userId, page, limit)
 
-    const { code, status, message } =  result as Transaction
-
-    const fetchData  =  result["data"]
-
-    const getMetaData = {... fetchData["metadata" as keyof typeof fetchData] }
-
-    const metadata = getMetaData["0" as keyof typeof getMetaData]
+    const responseStatus =  Utils.formatResponseStatus(result)
     
-    const transactions = fetchData["transactions" as keyof typeof fetchData]
+    const metadata = Utils.formatMetaData(result)
 
-    const responseData = { code, status, message, metadata, transactions}
+    const transactions =  Utils.formatTransactionHistory(result)
+
+    const responseData = {
+      ... responseStatus,
+      ... metadata,
+      ... transactions 
+}
+
     
 
     return res.status(result.code).json(responseData)

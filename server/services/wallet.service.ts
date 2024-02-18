@@ -229,17 +229,10 @@ export const fetchAccountSummary = async (userId: string) => {
 }
 
 
-
-
 export const fetchTransactionHistory = async (userId: string, page: number, limit: number) => {
 
   const transactionHistory = await Utils.getTransactionHistory(userId, page, limit)
 
-  // const returnData = Utils.formatTransactionHistory(transactionHistory as Transaction)
-
-  // const transactionHistory = await Utils.getTransactionHistory(userId, page, limit)
-
- 
   return Utils.provideResponse(200, 'success', 'transaction history',  {... {... transactionHistory[0] } } )
 }
 

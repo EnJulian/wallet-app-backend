@@ -28,5 +28,5 @@ export interface Transaction{
   "code": number,
   "status": string,
   "message": string,
-  "data": Record<string, unknown>
+  "data": Record<string, any>
 }
