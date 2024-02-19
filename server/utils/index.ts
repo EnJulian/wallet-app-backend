@@ -202,18 +202,33 @@ export class Utils {
         }
     }
 
-
-    static formatTransactionHistory = (transaction: Transaction) => {
+    // returns code, status and message 
+    static formatResponseStatus  = (transaction: Transaction) => {
 
         const { code, status, message } = transaction
-        const {metadata, transactions } = transaction.data[0]
-        const transactionDetails = { ...{...transactions } }
+
+        return { code, status, message } 
+    }
+
+      // returns transaction history
+    static formatTransactionHistory = (response: Transaction) => {
+        const fetchData  =  response["data"]
+        const transactions = fetchData["transactions" as keyof typeof fetchData]
+        return { transactions }
+    }
+
+
+    // returns transaction history metadata
+    static formatMetaData = (response: Transaction) => {
+
+        const fetchData  =  response["data"]
+
+        const getMetaData = {... fetchData["metadata" as keyof typeof fetchData] }
+    
+        const metadata = getMetaData["0" as keyof typeof getMetaData]
+    
+        return { metadata }
         
-        const transactionHistory = {
-            code, status, message,
-            metadata, transactionDetails
-        }
-        return transactionHistory
     }
 
 }
