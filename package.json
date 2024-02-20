@@ -4,7 +4,7 @@
   "description": "",
   "main": "./server/index.ts",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "tsc --project ./tsconfig.json && npm run start",
     "compile": "npx tsc --project ./tsconfig.json",
     "test": "npx tsc --project ./tsconfig.json && mocha -c server/**/*.test.ts --timeout 12000 --exit",
     "test1": "mocha -r ts-node/register server/**/*.ts --timeout 12000 --exit",
