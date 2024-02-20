@@ -145,8 +145,8 @@ export const transactionHistory = async (
 
     const userId = (req as any).userId;
 
-    const page = Number(req.query.page) || 0
-    const limit  = Number(req.query.limit) || 5
+    const page = Number(req.query.page) || 1
+    const limit  = Number(req.query.limit) || 6
 
     const result = await fetchTransactionHistory(userId, page, limit)
 
