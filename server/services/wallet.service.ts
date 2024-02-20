@@ -40,6 +40,7 @@ export const depositFunds = async ( userId: string, amount: number, wallet: stri
         wallet: WalletType.dollar,
         transactionType: transactionType,
         amount: amount,
+        currency: 'USD'
       }
       
       await Transactions.create(depositFundTransaction)
@@ -51,6 +52,7 @@ export const depositFunds = async ( userId: string, amount: number, wallet: stri
         wallet: WalletType.dollar,
         transactionType: transactionType,
         amount: amount,
+        currency: 'USD'
       }
       
       await Transactions.create(depositFundTransaction)
@@ -73,7 +75,8 @@ export const depositFunds = async ( userId: string, amount: number, wallet: stri
       wallet: WalletType.naira,
       transactionType: transactionType,
       amount: amount,
-    }
+      currency: 'NGN'
+     }
     
     await Transactions.create(depositFundTransaction)
 
@@ -84,6 +87,7 @@ export const depositFunds = async ( userId: string, amount: number, wallet: stri
         wallet: WalletType.naira,
         transactionType: transactionType,
         amount: amount,
+        currency: 'NGN'
       }
       
       await Transactions.create(depositFundTransaction)
@@ -176,6 +180,7 @@ export const transferFunds = async (
       wallet: WalletType.dollar,
       transactionType: transactionType,
       amount: amount,
+      currency: 'USD',
     }
 
     await Transactions.create(transferFundTransaction)
@@ -206,6 +211,7 @@ export const transferFunds = async (
       wallet: WalletType.naira,
       transactionType: transactionType,
       amount: amount,
+      currency: 'NGN',
     }
 
     await Transactions.create(transferFundTransaction)

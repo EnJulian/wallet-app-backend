@@ -5,6 +5,7 @@ import User from "./User";
 const transactionStatus: string[] = ["Successful", "Failed"];
 const walletType: string[] = ["NairaWallet", "DollarWallet"];
 const transactionType: string[] = ["Wallet Transfer", "Wallet Deposit"];
+const currencyType: string[] = ["NGN", "USD"];
 
 const transactionSchema = new Schema({
   userId: {
@@ -25,6 +26,10 @@ const transactionSchema = new Schema({
   },
   amount: Number,
   balance: Number,
+  currency: {
+    type: String,
+    enum: currencyType,
+  },
   createdAt: {
     type: Date,
     immutable: true,

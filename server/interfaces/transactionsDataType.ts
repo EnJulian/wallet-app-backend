@@ -21,6 +21,7 @@ export interface TransferDataType {
   amount: number;
   senderAccountNumber: string;
   receiverAccountNumber: string;
+  currency: string;
 }
 
 

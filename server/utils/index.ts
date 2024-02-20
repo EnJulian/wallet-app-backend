@@ -153,6 +153,7 @@ export class Utils {
                     "wallet": 1,
                     "transactionType": 1,
                     "createdAt": 1,
+                    "currency": 1,
                 }
             },
             {
