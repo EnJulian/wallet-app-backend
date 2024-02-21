@@ -37,7 +37,6 @@ export const depositFunds = async ( userId: string, amount: number, wallet: stri
       const depositFundTransaction = {
         userId,
         status: 'Successful',
-        wallet: WalletType.dollar,
         transactionType: transactionType,
         amount: amount,
         currency: 'USD'
@@ -49,7 +48,6 @@ export const depositFunds = async ( userId: string, amount: number, wallet: stri
       const depositFundTransaction = {
         userId,
         status: 'Failed',
-        wallet: WalletType.dollar,
         transactionType: transactionType,
         amount: amount,
         currency: 'USD'
@@ -60,7 +58,7 @@ export const depositFunds = async ( userId: string, amount: number, wallet: stri
     }
     
 
-    return Utils.provideResponse(201, 'success', 'you account has been credited with', amount)
+    return Utils.provideResponse(201, 'success', 'your account has been credited with', amount)
   }
   
   if (wallet === 'naira'){
@@ -72,7 +70,6 @@ export const depositFunds = async ( userId: string, amount: number, wallet: stri
     const depositFundTransaction = {
       userId,
       status: 'Successful',
-      wallet: WalletType.naira,
       transactionType: transactionType,
       amount: amount,
       currency: 'NGN'
@@ -84,7 +81,6 @@ export const depositFunds = async ( userId: string, amount: number, wallet: stri
       const depositFundTransaction = {
         userId,
         status: 'Failed',
-        wallet: WalletType.naira,
         transactionType: transactionType,
         amount: amount,
         currency: 'NGN'
@@ -94,7 +90,7 @@ export const depositFunds = async ( userId: string, amount: number, wallet: stri
 
     }
 
-    return Utils.provideResponse(201, 'success', 'you account has been credited with', amount)
+    return Utils.provideResponse(201, 'success', 'your account has been credited with', amount)
   
   }
   
@@ -137,7 +133,7 @@ export const transferFunds = async (
   userId: string,
   receiverAccountNumber: string, 
   transactionType: string,
-  wallet: string,
+ wallet: string,
   pin: string
 ) => {
   const _id = userId
@@ -177,7 +173,6 @@ export const transferFunds = async (
     const transferFundTransaction = {
       userId,
       status: updateReceiverBalance && updateSenderBalance ? 'Successful' : 'Failed',
-      wallet: WalletType.dollar,
       transactionType: transactionType,
       amount: amount,
       currency: 'USD',
@@ -208,7 +203,6 @@ export const transferFunds = async (
     const transferFundTransaction = {
       userId,
       status: updateReceiverBalance && updateSenderBalance ? 'Successful' : 'Failed',
-      wallet: WalletType.naira,
       transactionType: transactionType,
       amount: amount,
       currency: 'NGN',

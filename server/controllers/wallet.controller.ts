@@ -127,8 +127,17 @@ export const accountSummary = async (
     const userId = (req as any).userId;
 
     const result = await fetchAccountSummary(userId)
+    const responseStatus =  Utils.formatResponseStatus(result)
+    const userAccountDetails = Utils.formatUserAccountSummary( result)
+    const transactions =  Utils.formatTransactionHistory(result)
 
-    return res.status(result.code).json(result)
+    const responseData = {
+      ... responseStatus,
+      ... userAccountDetails,
+      ... transactions 
+    }
+    
+    return res.status(result.code).json(responseData)
   } catch (error) {
     next(error)
   }
@@ -160,7 +169,7 @@ export const transactionHistory = async (
       ... responseStatus,
       ... metadata,
       ... transactions 
-}
+    }
 
     
 

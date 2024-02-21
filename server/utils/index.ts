@@ -4,7 +4,8 @@ import Transactions from '../models/Transactions'
 import { type Response } from 'express'
 import User from "../models/User";
 import mongoose from 'mongoose';
-
+import moment from 'moment'
+import { TransactionsArray } from '../interfaces/transactionsDataType';
 
 // Class for storing generic functions to be used in the entire code
 export class Utils {
@@ -127,7 +128,7 @@ export class Utils {
                     "surname": 1,
                     "DollarWallet": 1,
                     "NairaWallet": 1,
-                    recentTransactions: { $slice: ["$summary", 6]}
+                    transactions: { $slice: ["$summary", 6]}
                 }
             }
         ])
@@ -212,9 +213,19 @@ export class Utils {
     }
 
       // returns transaction history
+    static formatUserAccountSummary = (response: Transaction) => {
+        const data  =  response["data"]
+        const { _id, firstname, surname, DollarWallet, NairaWallet } = data
+       
+        return { _id, firstname, surname, DollarWallet, NairaWallet }
+    }
+
+      // returns transaction history
     static formatTransactionHistory = (response: Transaction) => {
         const fetchData  =  response["data"]
-        const transactions = fetchData["transactions" as keyof typeof fetchData]
+        const transactionsData = fetchData["transactions" as keyof typeof fetchData]
+        
+       const transactions = transactionsData.map((element :TransactionsArray) => formatTransactionArray(element));
         return { transactions }
     }
 
@@ -245,3 +256,30 @@ export class ErrorResponseProvider extends Error {
     }
 }
 
+
+// format transaction history
+const formatTransactionArray = (object: TransactionsArray) => {
+      const {
+       _id,
+      status,
+      transactionType,
+       wallet,
+       amount,
+       currency,
+       createdAt
+      } = object
+
+  // format currency and amount
+  const currencyAmount = `${currency} ${amount}`
+  // format date and time
+  const dateTime = moment(createdAt).format('MMMM D, YYYY | LT'); 
+
+  return {
+     _id,
+     status,
+     transactionType,
+     wallet,
+     dateTime,
+    currencyAmount
+     }
+   }

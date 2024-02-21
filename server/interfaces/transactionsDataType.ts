@@ -31,3 +31,15 @@ export interface Transaction{
   "message": string,
   "data": Record<string, any>
 }
+
+
+export interface TransactionsArray{
+  '_id': string,
+  'userId'?: string,
+ 'status': string,
+  'transactionType': string,
+  'wallet': string,
+  'amount': number,
+  'currency': string,
+  'createdAt': string
+}
