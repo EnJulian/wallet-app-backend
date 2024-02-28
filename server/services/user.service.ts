@@ -11,7 +11,7 @@ import { Request, Response } from 'express'
  * @date 1/15/2024 - 9:50:35 AM
  *
  * @async
- * @returns
+ * @returns object
  * @param firstname
  * @param surname
  * @param othernames
@@ -59,13 +59,31 @@ export const registerNewUser = async (
   }
 
   const createUserResult = await User.create(newWalletUser)
-
+  if (createUserResult){
   return {
     code: 201,
     status: 'success',
     message: 'wallet user created'
   }
+  }
+
+  return {
+    code: 500,
+    status: 'fail',
+    message: 'create wallet user failed'
+  }
 }
+
+
+/**
+ * user login
+ * @date 1/15/2024 - 9:50:35 AM
+ *
+ * @async
+ * @returns object
+ * @param email
+ * @param password
+ */
 
 export const loginUser = async (email: string, password: string ) => {
 
@@ -139,3 +157,41 @@ export const createPin = async (req: Request, res: Response) => {
   return res.status(200).json(result!.email)
 };
 
+
+/**
+ * fetch user details
+ * @date 1/15/2024 - 9:50:35 AM
+ *
+ * @async
+ * @returns object
+ * @param userId
+ */
+
+export const fetchUserDetails = async (_id: string ) => {
+
+  // Check if that user is registered
+  const userDetails = await User.findOne({ _id }).exec()
+
+  if (!userDetails) {
+    throw new ErrorResponseProvider(
+      400,
+      'failed',
+      'no user profile'
+    )
+  }
+
+  const { firstname, surname, accountNumber, email, phonenumber} = userDetails
+  
+  return Utils.provideResponse(
+    200,
+    'success',
+    'fetch user profile success',
+    {  
+      firstname,
+      surname, 
+      accountNumber,
+      email, 
+      phonenumber
+    }
+  )
+}

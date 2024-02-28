@@ -1,5 +1,5 @@
 import { type NextFunction, type Request, type Response } from 'express'
-import { loginUser, registerNewUser } from '../services/user.service'
+import { loginUser, registerNewUser, fetchUserDetails } from '../services/user.service'
 
 /**
  * register new wallet customer
@@ -51,6 +51,35 @@ export const loginWalletUser = async (
   const { email, password } = req.body
     
     const data = await loginUser( email, password)
+
+    res.status(data.code).json(
+      data
+    )
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * get wallet user profile 
+ * @date 2/28/2024 - 19:23:55 PM
+ *
+ * @async
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * @returns JSON object as response data
+ */
+
+export const getUserProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = (req as any).userId;
+  
+    const data = await fetchUserDetails( userId)
 
     res.status(data.code).json(
       data
