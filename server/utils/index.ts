@@ -223,9 +223,12 @@ export class Utils {
       // returns transaction history
     static formatTransactionHistory = (response: Transaction) => {
         const fetchData  =  response["data"]
+
+        if (Object.keys(fetchData).length === 0){
+            return {}
+        }
         const transactionsData = fetchData["transactions" as keyof typeof fetchData]
-        
-       const transactions = transactionsData.map((element :TransactionsArray) => formatTransactionArray(element));
+        const transactions = transactionsData.map((element :TransactionsArray) => formatTransactionArray(element));
         return { transactions }
     }
 
@@ -234,6 +237,10 @@ export class Utils {
     static formatMetaData = (response: Transaction) => {
 
         const fetchData  =  response["data"]
+
+        if (Object.keys(fetchData).length === 0){
+            return {}
+        }
 
         const getMetaData = {... fetchData["metadata" as keyof typeof fetchData] }
     
