@@ -59,6 +59,14 @@ export const registerNewUser = async (
   }
 
   const createUserResult = await User.create(newWalletUser)
+  
+  if (!createUserResult){
+    throw new ErrorResponseProvider(
+      500,
+      'failed',
+      'create wallet user failed'
+    )
+  }
 
   return {
     code: 201,
@@ -82,7 +90,15 @@ export const loginUser = async (email: string, password: string ) => {
   }
 
   // Compare user passwords
-  const { password: dbPassword, _id, accountNumber } = registeredUser
+  const {
+    password: dbPassword,
+    _id, 
+    accountNumber,
+    firstname,
+    surname,
+    phonenumber,
+  } = registeredUser
+
 
   const userPassword = await bcrypt.compare(password, dbPassword);
   if (!userPassword) {
@@ -115,7 +131,10 @@ export const loginUser = async (email: string, password: string ) => {
       _id,
       email,
       token,
-      accountNumber
+      accountNumber,
+      firstname,
+      surname,
+      phonenumber
     }
   )
 }
