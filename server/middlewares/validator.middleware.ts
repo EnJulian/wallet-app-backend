@@ -2,6 +2,8 @@ import { type Request, type Response, type NextFunction } from 'express'
 import { Utils } from '../utils'
 import validator from 'validator'
 
+
+const PASSWORD_VALIDATOR = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).*$/,)
 /**
  * validate user sign up inputs
  * @date 1/15/2024 - 9:50:35 AM
@@ -18,8 +20,6 @@ export const validateUserSignUpInput = (req: Request, res: Response, next: NextF
     const {
       email, firstname, surname, password, phonenumber
     } = req.body
-
-    const passwordValidator = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).*$/,)
 
     if (typeof email !== 'string' || !validator.isEmail(email)) {
       return Utils.responseProvider(res, 'error','provide a valid email', 400, {})
@@ -43,7 +43,7 @@ export const validateUserSignUpInput = (req: Request, res: Response, next: NextF
       return Utils.responseProvider(res,'error', 'invalid password: the password is less than 8 characters', 400, {})
     }
     
-    if (!passwordValidator.test(password)) {
+    if (!PASSWORD_VALIDATOR.test(password)) {
       return Utils.responseProvider(res,'error', 'invalid password: password must have at least a number, letter and a special character,  ', 400, {})
     }
 
@@ -68,6 +68,10 @@ export const validateLoginInput = (req: Request, res: Response, next: NextFuncti
 
     if (typeof password !== 'string' || password.length < 8) {
       return Utils.responseProvider(res, 'error','invalid email and password', 400, {})
+    }
+
+    if (!PASSWORD_VALIDATOR.test(password)) {
+      return Utils.responseProvider(res,'error', 'invalid password: password must have at least a number, letter and a special character,  ', 400, {})
     }
 
     next()
