@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { type NextFunction, type Request, type Response } from 'express'
 import { 
@@ -97,7 +98,7 @@ export const transferWalletFunds = async (
       wallet,
       pin // TODO validate pin
     } = req.body
-  
+    
       let transactionType;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

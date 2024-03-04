@@ -149,6 +149,7 @@ export const transferFunds = async (
 
 
   const receiverExists = await User.findOne({ accountNumber: receiverAccountNumber })
+
   if (!receiverExists) {
     return Utils.provideResponse(400, 'error', 'invalid account', {})
   }
