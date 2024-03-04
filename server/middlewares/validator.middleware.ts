@@ -19,6 +19,8 @@ export const validateUserSignUpInput = (req: Request, res: Response, next: NextF
       email, firstname, surname, password, phonenumber
     } = req.body
 
+    const passwordValidator = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).*$/,)
+
     if (typeof email !== 'string' || !validator.isEmail(email)) {
       return Utils.responseProvider(res, 'error','provide a valid email', 400, {})
     }
@@ -40,6 +42,11 @@ export const validateUserSignUpInput = (req: Request, res: Response, next: NextF
     if (typeof password !== 'string' || password.length < 8) {
       return Utils.responseProvider(res,'error', 'invalid password: the password is less than 8 characters', 400, {})
     }
+    
+    if (!passwordValidator.test(password)) {
+      return Utils.responseProvider(res,'error', 'invalid password: password must have at least a number, letter and a special character,  ', 400, {})
+    }
+
     if (typeof phonenumber !== 'string' || !validator.isMobilePhone(phonenumber)) {
       return Utils.responseProvider(res,'error', 'provide a valid phone number', 400, {})
     }
