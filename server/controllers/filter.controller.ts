@@ -48,7 +48,6 @@ export const searchUsers = async (req: Request, res: Response) => {
     // res.json(searchResults);
         return res.status(200).json({ message: 'Details status searched successfully', status: 'success', data: searchResults });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Internal Server Error', details:(error as Error).message });
   }
 };

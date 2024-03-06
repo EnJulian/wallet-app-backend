@@ -30,9 +30,92 @@ import { ResetPasswordEmail } from "../controllers/EmailSender.controller";
 
 const router = express.Router();
 
+
+
+/**
+ * @openapi
+ * '/api/v1/wallet/signup':
+ *  post:
+ *    tags:
+ *      - User
+ *    summary: Creates a user!
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/SignUpUserInput'
+ *          
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/SignUpResponse'
+ *            
+ *      400:
+ *        description: Bad Request
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/BadRequestResponse'
+ *      409:
+ *        description: Conflict
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UserExistsResponse'
+ *      500:
+ *        description: Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerErrorResponse'
+ * 
+ */
+
 router.post("/signup", validateUserSignUpInput, createWalletUser);
 
+/**
+ * @openapi
+ * '/api/v1/wallet/login':
+ *  post:
+ *    tags:
+ *      - User
+ *    summary: Gets the user logged in
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/LogInUserInput'
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/LogInUserResponse'
+ *              
+ *      400:
+ *        description: Bad Request
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/BadRequestResponse'
+ * 
+ * 
+ *      500:
+ *        description: Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerErrorResponse'
+ */
+
 router.post("/login", validateLoginInput, loginWalletUser);
+
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 router.post("/send-email", sendCustomizedEmail);
