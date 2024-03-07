@@ -5,10 +5,8 @@ import Transactions from "../models/Transactions";
 
 export const getTransactions = async (req: Request, res: Response) => {
   try {
-    const filter: any = {};
-
     // Fetch userId from request
-    const userId = (req as any).userId;
+    const userId = req.userId;
 
     const user = await User.findById(userId);
     if (!user) {
@@ -17,6 +15,9 @@ export const getTransactions = async (req: Request, res: Response) => {
         status: "error",
       });
     }
+
+    // Initialize filter with user ID
+    const filter: any = { userId: userId };
 
     // Apply filtering conditions
     if (req.query.transactionType) {
@@ -37,6 +38,7 @@ export const getTransactions = async (req: Request, res: Response) => {
       endDate.setHours(23, 59, 59, 999); // Set time to end of the day (just before midnight)
 
       filter.createdAt = {
+        ...filter.createdAt,
         $lte: endDate,
       };
       console.log(endDate);
