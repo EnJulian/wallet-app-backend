@@ -82,7 +82,7 @@
  *      properties:
  *        email:
  *          type: string
- *          default: jane.doe@mail.com
+ *          default: janedoe@gmail.com
  *        password:
  *          type: string
  *          default: jJD79r4norgDo489nbo4-
