@@ -48,7 +48,7 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
       return res.status(401).json({
         status: 'error',
         code: 401,
-        message: 'kindly logged in!',
+        message: 'kindly log in!',
         data: null
       })
     }

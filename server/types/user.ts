@@ -20,18 +20,21 @@
  *        email:
  *          type: string
  *          default: janedoe@gmail.com
- *        pasword:
+ *        password:
  *          type: string
  *          default: jJD79r4norgDo489nbo4-
  *        phonenumber:
  *          type: string
- *          default: +233 245193416
+ *          default: 0245193416
  *    SignUpResponse:
  *      type: object
  *      properties:
  *        message:
  *          type: string
  *          default: "wallet user created"
+ *        status:
+ *          type: string
+ *          default: "success"
  *        data:
  *          type: string
  *          default:
@@ -41,6 +44,9 @@
  *        message:
  *          type: string
  *          default: "user already exists!"
+ *        status:
+ *          type: string
+ *          default: "error"
  *          data:
  *            type: object
  *            default:
@@ -50,6 +56,9 @@
  *        message:
  *          type: string
  *          default: "Invalid input!"
+ *        status:
+ *          type: string
+ *          default: "error"
  *          data:
  *            type: object
  *            default:
@@ -59,6 +68,9 @@
  *        message:
  *          type: string
  *          default: "An Error has Occurred!"
+ *        status:
+ *          type: string
+ *          default: "error"
  *          data:
  *            type: object
  *            default:
@@ -71,7 +83,7 @@
  *        email:
  *          type: string
  *          default: jane.doe@mail.com
- *        pasword:
+ *        password:
  *          type: string
  *          default: jJD79r4norgDo489nbo4-
  *    LogInUserResponse:
@@ -80,8 +92,23 @@
  *        message:
  *          type: string
  *          default: "login success"
+ *        status:
+ *          type: string
+ *          default: "success"
  *          data:
  *            type: object
  *            default:
+ *    BadLogInRequestResponse:
+ *      type: object
+ *      properties:
+ *        message:
+ *          type: string
+ *          default: "Invalid email or password!"
+ *        status:
+ *          type: string
+ *          default: "error"
+ *          data:
+ *            type: object
+ *            default: 
  */
 

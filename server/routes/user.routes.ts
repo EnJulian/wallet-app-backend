@@ -37,7 +37,7 @@ const router = express.Router();
  * '/api/v1/wallet/signup':
  *  post:
  *    tags:
- *      - User
+ *      - User signup
  *    summary: Creates a user!
  *    requestBody:
  *      required: true
@@ -82,7 +82,7 @@ router.post("/signup", validateUserSignUpInput, createWalletUser);
  * '/api/v1/wallet/login':
  *  post:
  *    tags:
- *      - User
+ *      - User login
  *    summary: Gets the user logged in
  *    requestBody:
  *      required: true
@@ -103,7 +103,7 @@ router.post("/signup", validateUserSignUpInput, createWalletUser);
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/BadRequestResponse'
+ *              $ref: '#/components/schemas/BadLogInRequestResponse'
  * 
  * 
  *      500:
@@ -121,7 +121,36 @@ router.post("/reset-password", resetPassword);
 router.post("/send-email", sendCustomizedEmail);
 router.post("/resetemail-link", ResetPasswordEmail);
 
+/**
+ * @openapi
+ * '/api/v1/wallet/account-balance':
+ *  get:
+ *    tags:
+ *      - Account balance
+ *    summary: Gets the wallet balance
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/AccountBalanceResponse'
+ *      401:
+ *        description: Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UnauthorizedErrorResponse'        
+ *      500:
+ *        description: Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerErrorResponse'
+ */
+
 router.get("/account-balance", checkToken, walletBalance);
+
 router.get("/filter", getTransactions);
 router.get("/search", searchUsers);
 router.patch(
@@ -137,7 +166,64 @@ router.patch(
   transferWalletFunds
 );
 
+/**
+ * @openapi
+ * '/api/v1/wallet/account-summary':
+ *  get:
+ *    tags:
+ *      - Account summary
+ *    summary: Gets account summary
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/AccountBalanceResponse'
+ *      401:
+ *        description: Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UnauthorizedErrorResponse'        
+ *      500:
+ *        description: Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerErrorResponse'
+ */
+
 router.get("/account-summary", checkToken, accountSummary);
+
+/**
+ * @openapi
+ * '/api/v1/wallet/transactions-history':
+ *  get:
+ *    tags:
+ *      - Account Transaction History
+ *    summary: Gets account history
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/AccountBalanceResponse'
+ *      401:
+ *        description: Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UnauthorizedErrorResponse'        
+ *      500:
+ *        description: Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerErrorResponse'
+ */
+
 router.get("/transactions-history", checkToken, transactionHistory);
 router.post("/create-pin", authenticate, createPin);
 

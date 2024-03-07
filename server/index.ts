@@ -38,7 +38,7 @@ app.listen(PORT, () => {
 })
 
 void swaggerDocs(router)
-app.use(ap1Version1)
+app.use('/api/v1', ap1Version1)
 app.use(appErrorHandler)
 app.use(genericErrorHandler)
 app.use(notFound)
