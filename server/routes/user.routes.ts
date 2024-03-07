@@ -39,7 +39,7 @@ router.post("/send-email", sendCustomizedEmail);
 router.post("/resetemail-link", ResetPasswordEmail);
 
 router.get("/account-balance", checkToken, walletBalance);
-router.get("/filter", getTransactions);
+router.get("/filter", checkToken, getTransactions);
 router.get("/search", searchUsers);
 router.patch(
   "/deposit-funds",

@@ -2,8 +2,8 @@ import {
   type Request,
   type Response,
   type NextFunction,
-  type ErrorRequestHandler
-} from 'express'
+  type ErrorRequestHandler,
+} from "express";
 
 /**
  * Error response middleware for 404 not found.
@@ -16,9 +16,9 @@ import {
 export const notFound = (req: Request, res: Response) => {
   res.status(404).json({
     code: 404,
-    message: 'route not found'
-  })
-}
+    message: "route not found",
+  });
+};
 
 /**
  *Error response middleware for handling all
@@ -38,7 +38,7 @@ export const appErrorHandler: ErrorRequestHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  if (err.code !== null && typeof err.code === 'number') {
+  if (err.code !== null && typeof err.code === "number") {
     // TODO remove console.log replace with logging
     console.log(`
       status - ${err.code}
@@ -46,16 +46,16 @@ export const appErrorHandler: ErrorRequestHandler = (
       url - ${req.originalUrl} 
       method - ${req.method} 
       IP - ${req.ip}
-    `)
+    `);
 
     res.status(err.code).json({
       code: err.code,
-      message: err.message
-    })
+      message: err.message,
+    });
   } else {
-    next(err)
+    next(err);
   }
-}
+};
 
 // Generic error response middleware
 // for internal server errors.
@@ -73,7 +73,7 @@ export const appErrorHandler: ErrorRequestHandler = (
 export const genericErrorHandler: ErrorRequestHandler = (
   err: any,
   req: Request,
-  res: Response,
+  res: Response
 ) => {
   // TODO remove console.log replace with logging
   console.log(`
@@ -82,11 +82,11 @@ export const genericErrorHandler: ErrorRequestHandler = (
     url - ${req.originalUrl} 
     method - ${req.method} 
     IP - ${req.ip}
-  `)
+  `);
 
   res.status(500).json({
     code: 500,
-    data: '',
-    message: err.message
-  })
-}
+    data: "",
+    message: err.message,
+  });
+};
