@@ -1,4 +1,3 @@
-
 import mongoose, { Schema } from "mongoose";
 import User from "./User";
 
@@ -9,7 +8,8 @@ const currencyType: string[] = ["NGN", "USD"];
 
 const transactionSchema = new Schema({
   userId: {
-    type: Schema.ObjectId, ref: User,
+    type: Schema.ObjectId,
+    ref: User,
     require: true,
   },
   status: {
@@ -36,7 +36,5 @@ const transactionSchema = new Schema({
     default: () => Date.now(),
   },
 });
-
-
 
 export default mongoose.model("Transactions", transactionSchema);

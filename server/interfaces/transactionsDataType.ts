@@ -24,22 +24,20 @@ export interface TransferDataType {
   currency: string;
 }
 
-
-export interface Transaction{
-  "code": number,
-  "status": string,
-  "message": string,
-  "data": Record<string, any>
+export interface Transaction {
+  code: number;
+  status: string;
+  message: string;
+  data: Record<string, any>;
 }
 
-
-export interface TransactionsArray{
-  '_id': string,
-  'userId'?: string,
- 'status': string,
-  'transactionType': string,
-  'wallet': string,
-  'amount': number,
-  'currency': string,
-  'createdAt': string
+export interface TransactionsArray {
+  _id: string;
+  userId?: string;
+  status: string;
+  transactionType: string;
+  wallet: string;
+  amount: number;
+  currency: string;
+  createdAt: string;
 }
