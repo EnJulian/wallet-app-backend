@@ -6,7 +6,7 @@ import Transactions from "../models/Transactions";
 export const getTransactions = async (req: Request, res: Response) => {
   try {
     // Fetch userId from request
-    const userId = req.userId;
+    const userId = (req as any).userId;
 
     const user = await User.findById(userId);
     if (!user) {
