@@ -83,6 +83,7 @@ export const searchUsers = async (req: Request, res: Response) => {
       data: searchResults,
     });
   } catch (error) {
+
     console.error(error);
     res.status(500).json({
       error: "Internal Server Error",

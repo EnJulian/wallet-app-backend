@@ -29,7 +29,6 @@ describe("Testing Express Endpoints", () => {
       .request(app)
       .post("/api/v1/wallet/send-email")
       .send(passwordlink);
-    // console.log(response.body);
     expect(response.status).to.equal(200);
   });
 

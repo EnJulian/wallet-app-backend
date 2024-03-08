@@ -63,15 +63,15 @@ export const validateLoginInput = (req: Request, res: Response, next: NextFuncti
     const { email, password } = req.body
 
     if (!validator.isEmail(email)) {
-      return Utils.responseProvider(res, 'error', 'invalid email and password', 400, {})
+      return Utils.responseProvider(res, 'error', 'invalid email or password', 400, {})
     }
 
     if (typeof password !== 'string' || password.length < 8) {
-      return Utils.responseProvider(res, 'error','invalid email and password', 400, {})
+      return Utils.responseProvider(res, 'error','invalid email or password', 400, {})
     }
 
     if (!PASSWORD_VALIDATOR.test(password)) {
-      return Utils.responseProvider(res,'error', 'invalid password: password must have at least a number, letter and a special character,  ', 400, {})
+      return Utils.responseProvider(res,'error', 'invalid password,  ', 400, {})
     }
 
     next()
