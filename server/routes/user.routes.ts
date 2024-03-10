@@ -125,6 +125,8 @@ router.post("/resetemail-link", ResetPasswordEmail);
  * @openapi
  * '/api/v1/wallet/account-balance':
  *  get:
+ *    security:
+ *      - ApiAuthentication: []
  *    tags:
  *      - Account balance
  *    summary: Gets the wallet balance
@@ -179,7 +181,8 @@ router.patch(
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/AccountBalanceResponse'
+ *              $ref: '#/components/schemas/AccountSummaryResponse'
+ *               
  *      401:
  *        description: Error
  *        content:
@@ -209,7 +212,7 @@ router.get("/account-summary", checkToken, accountSummary);
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/AccountBalanceResponse'
+ *              $ref: '#/components/schemas/TransactionsHistoryResponse'
  *      401:
  *        description: Error
  *        content:

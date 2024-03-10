@@ -3,20 +3,20 @@ import swaggerUi from 'swagger-ui-express';
 import { Request, Response } from 'express';
 
 const options = {
-  definition: {
-    openapi: '3.1.0',
+ definition: {
+   openapi: '3.1.0', 
     info: {
       title: 'Wallet API Docs',
       version: "0.1.0",
-      description:
-        "Wallet Api Documentation",
-    },
+      description: "Wallet Api Documentation",
+     },
     components: {
-      securitySchemes: {
-        apiKeyAuth: {
-          type: 'apiKey',
-          in: 'header',
-          name: 'Authorization',
+  securitySchemes: {
+    ApiAuthentication: {
+     type: 'apiKey',
+     in: 'header',
+     name: 'Authorization',
+     description: 'Enter the token with the Bearer: prefix. eg. Bearer abcd123 ...'
         },
       },
     },
