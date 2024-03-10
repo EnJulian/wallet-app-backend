@@ -31,9 +31,9 @@ export const authenticate = (req: Request<any>, res: Response, next: NextFunctio
         const token = checkToken(req);
     if (!token) {
         return res.status(400).json({
-            code: 404,
+            code: 401,
             status: 'error',
-            message: 'bearer token is required',
+            message: 'Kindly log in!',
             data: null
         })
     }

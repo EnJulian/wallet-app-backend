@@ -219,6 +219,34 @@
  *        data:
  *          type: object
  *          properties: {  "amount_sent": 300.098, "current_balance": 529.8040000000001}
+ * 
+ * 
+ * 
+ *    CreatePinInput:
+ *      type: object
+ *      required:
+ *        - pin
+ *      properties:
+ *        pin:
+ *          type: string
+ *          default: "3000"
+ * 
+ *    CreatePinResponse:
+ *      type: object
+ *      properties:
+ *        code:
+ *          type: number
+ *          default: 201
+ *        message:
+ *          type: string
+ *          default: "pin created"
+ *        status: 
+ *          type: string
+ *          default: "success"
+ *        data:
+ *          type: string
+ *          default: "janedoe@gmail.com"
+ *  
  */
 
 

@@ -138,7 +138,7 @@ router.post("/resetemail-link", ResetPasswordEmail);
  *            schema:
  *              $ref: '#/components/schemas/AccountBalanceResponse'
  *      401:
- *        description: Error
+ *        description: Unauthorized
  *        content:
  *          application/json:
  *            schema:
@@ -184,7 +184,7 @@ router.get("/search", searchUsers);
  *            schema:
  *              $ref: '#/components/schemas/InvalidAmountResponse'               
  *      401:
- *        description: Error
+ *        description: Unauthorized
  *        content:
  *          application/json:
  *            schema:
@@ -231,7 +231,7 @@ router.patch(
  *            schema:
  *              $ref: '#/components/schemas/InvalidAmountResponse'                  
  *      401:
- *        description: Error
+ *        description: Unauthorized
  *        content:
  *          application/json:
  *            schema:
@@ -268,7 +268,7 @@ router.patch(
  *              $ref: '#/components/schemas/AccountSummaryResponse'
  *               
  *      401:
- *        description: Error
+ *        description: Unauthorized
  *        content:
  *          application/json:
  *            schema:
@@ -298,7 +298,7 @@ router.get("/account-summary", checkToken, accountSummary);
  *            schema:
  *              $ref: '#/components/schemas/TransactionsHistoryResponse'
  *      401:
- *        description: Error
+ *        description: Unauthorized
  *        content:
  *          application/json:
  *            schema:
@@ -312,6 +312,52 @@ router.get("/account-summary", checkToken, accountSummary);
  */
 
 router.get("/transactions-history", checkToken, transactionHistory);
+
+
+/**
+ * @openapi
+ * '/api/v1/wallet/create-pin':
+ *  post:
+ *    tags:
+ *      - Wallet user pin
+ *    summary: Creates a  Wallet user pin
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/CreatePinInput'
+ *          
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/CreatePinResponse'
+ *      401:
+ *        description: Unauthorized
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UnauthorizedErrorResponse'   
+ *            
+ *      400:
+ *        description: Bad Request
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/BadRequestResponse'
+ *
+ *      500:
+ *        description: Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerErrorResponse'
+ * 
+ */
+
 router.post("/create-pin", authenticate, createPin);
 
 router.get("/health", (req, res) => res.status(200).json());

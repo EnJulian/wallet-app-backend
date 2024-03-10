@@ -50,9 +50,14 @@
  *          data:
  *            type: object
  *            default:
+ * 
+ * 
  *    BadRequestResponse:
  *      type: object
  *      properties:
+ *        code:
+ *          type: number
+ *          default: 400
  *        message:
  *          type: string
  *          default: "Invalid input!"
