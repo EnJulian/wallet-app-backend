@@ -125,6 +125,8 @@ router.post("/resetemail-link", ResetPasswordEmail);
  * @openapi
  * '/api/v1/wallet/account-balance':
  *  get:
+ *    security:
+ *      - ApiAuthentication: []
  *    tags:
  *      - Account balance
  *    summary: Gets the wallet balance
@@ -136,7 +138,7 @@ router.post("/resetemail-link", ResetPasswordEmail);
  *            schema:
  *              $ref: '#/components/schemas/AccountBalanceResponse'
  *      401:
- *        description: Error
+ *        description: Unauthorized
  *        content:
  *          application/json:
  *            schema:
@@ -153,12 +155,94 @@ router.get("/account-balance", checkToken, walletBalance);
 
 router.get("/filter", checkToken, getTransactions);
 router.get("/search", searchUsers);
+
+
+/**
+ * @openapi
+ * '/api/v1/wallet/deposit-funds':
+ *  patch:
+ *    tags:
+ *      - Deposit Funds
+ *    summary: deposit funds into wallet
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/DepositFundsInput'
+ *    responses:
+ *      201:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/DepositFundsResponse'
+ *      400:
+ *        description: Bad Request
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/InvalidAmountResponse'               
+ *      401:
+ *        description: Unauthorized
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UnauthorizedErrorResponse'        
+ *      500:
+ *        description: Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerErrorResponse'
+ */
 router.patch(
   "/deposit-funds",
   checkToken,
   validateFundWalletFundInputs,
   fundWallet
 );
+
+/**
+ * @openapi
+ * '/api/v1/wallet/transfer-funds':
+ *  patch:
+ *    tags:
+ *      - Transfer Funds
+ *    summary: transfer funds from wallet into another user's wallet
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/TransferFundsInput'
+ *    responses:
+ *      201:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/TransferFundsResponse'
+ * 
+ *      400:
+ *        description: Bad Request
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/InvalidAmountResponse'                  
+ *      401:
+ *        description: Unauthorized
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UnauthorizedErrorResponse'        
+ *      500:
+ *        description: Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerErrorResponse'
+ */
 router.patch(
   "/transfer-funds",
   checkToken,
@@ -173,15 +257,18 @@ router.patch(
  *    tags:
  *      - Account summary
  *    summary: Gets account summary
+ *    requestBody:
+ *      required: true
  *    responses:
  *      200:
  *        description: Success
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/AccountBalanceResponse'
+ *              $ref: '#/components/schemas/AccountSummaryResponse'
+ *               
  *      401:
- *        description: Error
+ *        description: Unauthorized
  *        content:
  *          application/json:
  *            schema:
@@ -202,16 +289,16 @@ router.get("/account-summary", checkToken, accountSummary);
  *  get:
  *    tags:
  *      - Account Transaction History
- *    summary: Gets account history
+ *    summary: Get wallet transaction history
  *    responses:
  *      200:
  *        description: Success
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/AccountBalanceResponse'
+ *              $ref: '#/components/schemas/TransactionsHistoryResponse'
  *      401:
- *        description: Error
+ *        description: Unauthorized
  *        content:
  *          application/json:
  *            schema:
@@ -225,6 +312,52 @@ router.get("/account-summary", checkToken, accountSummary);
  */
 
 router.get("/transactions-history", checkToken, transactionHistory);
+
+
+/**
+ * @openapi
+ * '/api/v1/wallet/create-pin':
+ *  post:
+ *    tags:
+ *      - Wallet user pin
+ *    summary: Creates a  Wallet user pin
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/CreatePinInput'
+ *          
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/CreatePinResponse'
+ *      401:
+ *        description: Unauthorized
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UnauthorizedErrorResponse'   
+ *            
+ *      400:
+ *        description: Bad Request
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/BadRequestResponse'
+ *
+ *      500:
+ *        description: Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerErrorResponse'
+ * 
+ */
+
 router.post("/create-pin", authenticate, createPin);
 
 router.get("/health", (req, res) => res.status(200).json());
