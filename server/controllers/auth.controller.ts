@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import User from "../models/User";
 //import crypto from 'crypto';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import config from "../config/env";
+import Logger from "../config/logger";
 //import nodemailer from 'nodemailer';
 
 export const forgotPassword = async (
@@ -11,6 +13,7 @@ export const forgotPassword = async (
   res: Response
 ): Promise<any> => {
   try {
+    Logger.info(`[FORGOT_PASSWORD] by ${req.body.email}`)
     // Checking if email exists in the database
     const client = await User.findOne({ email: req.body.email });
 
@@ -49,6 +52,7 @@ export const forgotPassword = async (
     // save the newly generated token in the database
     try {
       const saveToken = await client.save();
+      Logger.info(`[FORGOT_PASSWORD_SUCCESS] by ${req.body.email}`)
       return res.status(200).json({
         message: "Add your client URL that handles reset password",
         data: {
@@ -64,6 +68,7 @@ export const forgotPassword = async (
       });
     }
   } catch (error) {
+    Logger.error(`[FORGOT_PASSWORD_FAILED]`, (error as Error).message)
     return res.status(500).json({
       status: false,
       message: `An error occurred -> ${error}`,
@@ -82,7 +87,7 @@ export const resetPassword = async (
 ): Promise<any> => {
   try {
     const { newPassword, confirmPassword, token } = req.body;
-
+    Logger.info(`[RESET_PASSWORD]`)
     // Check if newPassword and confirmPassword match
     if (newPassword !== confirmPassword) {
       return res.status(400).json({
@@ -116,13 +121,14 @@ export const resetPassword = async (
 
     // Save the updated user information
     await user.save();
-
+    Logger.info(`[RESET_PASSWORD_SUCCESS]`)
     // Send success response
     return res.status(200).json({
       message: "Password successfully reset",
       status: "success",
     });
   } catch (error) {
+    Logger.error(`[RESET_PASSWORD_FAILED]`, (error as Error).message)
     return res.status(500).json({
       status: false,
       message: `An error occurred while trying to reset your password`,

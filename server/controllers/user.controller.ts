@@ -28,7 +28,7 @@ export const createWalletUser = async (
       password,
       phonenumber
     } = req.body
-
+    Logger.info(`[CREATE_WALLET_USER] by ${email}`)
     const data = await registerNewUser(
       firstname,
       surname,
@@ -40,8 +40,8 @@ export const createWalletUser = async (
     res.status(data.code).json(data)
   } catch (error) {
     Logger.error(
-      'Error: an error occurred while creating user wallet user.controller::createWalletUser',
-      error
+      `[CREATE_WALLET_USER_FAILED]`,
+      (error as Error).message
     );
     next(error)
   }
@@ -53,8 +53,8 @@ export const loginWalletUser = async (
   next: NextFunction
 ) => {
   try {
-  const { email, password } = req.body
-    
+    const { email, password } = req.body
+    Logger.info(`[LOGIN_WALLET_USER] by ${email}`)
     const data = await loginUser( email, password)
 
     res.status(data.code).json(
@@ -62,8 +62,8 @@ export const loginWalletUser = async (
     )
   } catch (error) {
     Logger.error(
-      'Error: an error occurred while logging user in user.controller::loginWalletUser',
-      error,
+    `[LOGIN_WALLET_USER_FAILED]`,
+    (error as Error).message,
     );
     next(error)
   }

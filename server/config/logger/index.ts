@@ -10,17 +10,17 @@ const logFormat = winston.format.combine(
   winston.format.timestamp(),
   winston.format.errors({ stack: true }),
   winston.format.align(),
-  winston.format.json(),
+  // winston.format.json(),
   winston.format.printf((info) => {
     const { level, message, label, timestamp, stack, code } = info;
 
     if (level == 'error') {
-      return `[${level}] [${timestamp}] ${
-        code != null ? `[${code}] -> [${message}] ` : message
-      } ${code == null || code >= 500 ? `$[ERR_STACK] -> ${stack} ` : ''}`;
+      return `{"level": ${level}, "timestamp": ${timestamp}, ${
+        code != null ? `"code": ${code} -> ${message} ` : message
+      } ${code === null || code >= 500 ? `"errorstack": $[ERR_STACK] -> ${stack} ` : ''}}`;
     }
 
-    return `[${level}] -> [${timestamp}] [${label}] ->  ${message}`;
+    return `{"level": [${level}],  "label": [${label}], "timestamp": [${timestamp}], "message":  ${message}}`;
   }),
 );
 
@@ -44,13 +44,14 @@ const LogLevel: string = 'error' || 'warn' || 'info' || 'http' || 'verbose' || '
  * creates DailyRotateFile
  *
  * @param {string} filename
- * @param {boolean} zipArchive
- * @param {string} datePattern
- * @param {string} maxSize
- * @param {string} maxFiles
  * @param {LogLevel} level
- * @param {string} logFileExtension
  * @param {winston.Logform.FormatWrap} logFilter
+ * @param {boolean} [zipArchive = true]
+ * @param {string} [datePattern = 'YYYY-MM-DD-HH:MM']
+ * @param {string} [maxSize = '10m']
+ * @param {string} [maxFiles = '80d']
+ * @param {string} [logFileExtension = '.log']
+ * 
  */
 const logTransport = (
   filename: string,
@@ -111,7 +112,6 @@ export const morganMiddleware = morgan(
   ':method :url :status :res[content-length] - :response-time ms',
   {
     stream: {
-      // Configure Morgan to use our custom logger with the http severity
       write: (message) => morganLogger.http(message.trim()),
     },
   }

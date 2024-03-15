@@ -19,16 +19,17 @@ export const walletBalance = async (
     next: NextFunction
 ) => {
   try {
-
     const userId = (req as any).userId;
+
+    Logger.info(`[WALLET_BALANCE] by ${userId}`)
 
     const result = await fetchWalletBalance(userId);
     const { status, message, code, data } = result;
     Utils.responseProvider(res, status, message, code, data);
   } catch (error) {
     Logger.error(
-      'Error: an error occurred fetching current balance wallet.controller::walletBalance',
-      error,
+      `[WALLET_BALANCE] failed `,
+      (error as Error).message,
     );
     next(error);
   }
@@ -62,18 +63,19 @@ export const fundWallet = async (
 
 
     let transactionType;
-
+    Logger.info(`[FUND_WALLET] by ${userId}`)
     const result = await depositFunds(
       userId ,
       amount, 
       wallet, 
       transactionType = 'Wallet Deposit'
       )
+
     return res.status(result.code).json(result)
   } catch (error) {
     Logger.error(
-      'Error: an error occurred depositing funds into wallet wallet.controller::fundWallet',
-      error,
+      `[FUND_WALLET] failed failed`,
+      (error as Error).message,
     );
     next(error)
   }
@@ -110,6 +112,8 @@ export const transferWalletFunds = async (
     
       let transactionType;
 
+      Logger.info(`[TRANSFER_FUND] by ${userId}`)
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const result = await transferFunds(
       amount, 
@@ -119,11 +123,12 @@ export const transferWalletFunds = async (
       wallet,
       pin
       )
+
     return res.status(result!.code).json(result)
   } catch (error) {
     Logger.error(
-      'Error: an error occurred transferring funds wallet.controller::transferFunds',
-      error,
+      `[TRANSFER_FUND] failed`,
+      (error as Error).message,
     );
     next(error)
   }
@@ -136,10 +141,8 @@ export const accountSummary = async (
   next: NextFunction
 ) => {
   try {
-
-
     const userId = (req as any).userId;
-
+    Logger.info(`[ACCOUNT_SUMMARY] by ${userId}`)
     const result = await fetchAccountSummary(userId)
     const responseStatus =  Utils.formatResponseStatus(result)
     const userAccountDetails = Utils.formatUserAccountSummary( result)
@@ -150,12 +153,12 @@ export const accountSummary = async (
       ... userAccountDetails,
       ... transactions 
     }
-    
+
     return res.status(result.code).json(responseData)
   } catch (error) {
     Logger.error(
-      'Error: an error occurred fetching account summary wallet.controller::accountSummary',
-      error,
+      `[ACCOUNT_SUMMARY] failed`,
+      (error as Error).message,
     );
     next(error)
   }
@@ -175,6 +178,8 @@ export const transactionHistory = async (
     const page = Number(req.query.page) || 1
     const limit  = Number(req.query.limit) || 6
 
+    Logger.info(`[TRANSACTION_HISTORY] by ${userId}`)
+
     const result = await fetchTransactionHistory(userId, page, limit)
 
     const responseStatus =  Utils.formatResponseStatus(result)
@@ -192,8 +197,8 @@ export const transactionHistory = async (
     return res.status(result.code).json(responseData)
   } catch (error) {
     Logger.error(
-      'Error: an error occurred fetching transaction history wallet.controller::transactionHistory',
-      error,
+      `[TRANSACTION_HISTORY] failed`,
+      (error as Error).message,
     );
     next(error)
   }
