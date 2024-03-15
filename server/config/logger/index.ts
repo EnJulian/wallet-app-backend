@@ -34,6 +34,9 @@ const infoFilter = winston.format((info) => {
   return info.level === 'info' ? info : false;
 });
 
+const accessFilter = winston.format((info) => {
+  return info.level === 'http' ? info : false;
+});
 
 const LogLevel: string = 'error' || 'warn' || 'info' || 'http' || 'verbose' || 'debug' || 'silly'
 
@@ -86,8 +89,11 @@ const errorLogRotationTransport = logTransport(
   );
 
 
-
-
+const accessLogRotationTransport = logTransport(
+  './/logs//access',
+  'http',
+  accessFilter
+  );
 
 const morganLogger = winston.createLogger({
   level: 'http',
@@ -96,8 +102,7 @@ const morganLogger = winston.createLogger({
     json()
   ),
   transports: [
-    infoLogRotationTransport,
-    errorLogRotationTransport,
+    accessLogRotationTransport,
   ],
 });
 
@@ -122,7 +127,7 @@ const loggerOptions = (env: string) => {
         format: logFormat,
         transports: [
           infoLogRotationTransport,
-          errorLogRotationTransport,
+          errorLogRotationTransport
         ],
         exitOnError: false,
       });
@@ -134,6 +139,7 @@ const loggerOptions = (env: string) => {
         transports: [
           infoLogRotationTransport,
           errorLogRotationTransport,
+          accessLogRotationTransport,
           new winston.transports.Console({
             level: 'debug',
             handleExceptions: true,
@@ -149,6 +155,7 @@ const loggerOptions = (env: string) => {
         transports: [
           infoLogRotationTransport,
           errorLogRotationTransport,
+          accessLogRotationTransport,
           new winston.transports.Console({
             level: 'debug',
             handleExceptions: true,
@@ -164,6 +171,7 @@ const loggerOptions = (env: string) => {
         transports: [
           infoLogRotationTransport,
           errorLogRotationTransport,
+          accessLogRotationTransport,
           new winston.transports.Console(),
         ],
         exitOnError: false,
@@ -218,6 +226,13 @@ export default class Logger {
     logger.warn(message, context);
   }
 
+  public static http(
+    message: string,
+    context?: string | object | Array<unknown>,
+  ): void {
+    logger.http(message, context);
+  }
+
   public info(message: string, context?: string | object | Array<unknown>) {
     logger.info(message, context ?? this.defaultContext);
   }
@@ -234,6 +249,10 @@ export default class Logger {
     context?: string | object | Array<unknown>,
   ): void {
     logger.warn(message, context);
+  }
+
+  public http(message: string, context?: string | object | Array<unknown>) {
+    logger.http(message, context ?? this.defaultContext);
   }
 }
 
