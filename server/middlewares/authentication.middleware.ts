@@ -2,8 +2,9 @@
 import jwt from "jsonwebtoken";
 import type { JwtPayload } from "jsonwebtoken";
 import { type Request, type Response, type NextFunction } from "express";
+import Logger from "../config/logger";
 
-import config from "../config/env/index";
+import config from "../config/env";
 
 const SECRET = config.JWT_SECRET_KEY;
 
@@ -44,6 +45,12 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
 
     next();
   } catch (error) {
+    
+    Logger.error(
+      'Error: an error occurred while loggin user in authentication.middleware::checkToken',
+      error,
+    );
+
     if (error instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({
         status: "error",
@@ -51,6 +58,7 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
         message: 'kindly log in!',
         data: null
       })
+
 
     }
 

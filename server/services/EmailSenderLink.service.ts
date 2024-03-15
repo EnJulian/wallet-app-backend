@@ -1,6 +1,7 @@
 import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 import { applicantForgotPasswordMail } from "../EmailSender.template";
+import Logger from '../config/logger';
 
 dotenv.config();
 
@@ -53,6 +54,10 @@ export async function sendResetPasswordEmail(email: string): Promise<any> {
   } catch (error: any) {
     // Specify 'any' as the error type
     console.error(error.message); // Use error.message directly
+    Logger.error(
+      'Error: an error occurred sending reset password email to user services::EmailSenderLink::sendResetPasswordEmail',
+      error,
+    );
     throw new Error("Failed to send email.");
   }
 }

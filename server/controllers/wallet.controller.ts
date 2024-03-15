@@ -10,6 +10,7 @@ import {
 import { fetchTransactionHistory } from '../services/wallet.service'
 import { Utils } from '../utils'
 import { Transaction } from '../interfaces'
+import Logger from '../config/logger';
 
 
 export const walletBalance = async (
@@ -25,6 +26,10 @@ export const walletBalance = async (
     const { status, message, code, data } = result;
     Utils.responseProvider(res, status, message, code, data);
   } catch (error) {
+    Logger.error(
+      'Error: an error occurred fetching current balance wallet.controller::walletBalance',
+      error,
+    );
     next(error);
   }
 };
@@ -66,6 +71,10 @@ export const fundWallet = async (
       )
     return res.status(result.code).json(result)
   } catch (error) {
+    Logger.error(
+      'Error: an error occurred depositing funds into wallet wallet.controller::fundWallet',
+      error,
+    );
     next(error)
   }
 }
@@ -96,7 +105,7 @@ export const transferWalletFunds = async (
       receiverAccountNumber, 
       amount, 
       wallet,
-      pin // TODO validate pin
+      pin 
     } = req.body
     
       let transactionType;
@@ -112,6 +121,10 @@ export const transferWalletFunds = async (
       )
     return res.status(result!.code).json(result)
   } catch (error) {
+    Logger.error(
+      'Error: an error occurred transferring funds wallet.controller::transferFunds',
+      error,
+    );
     next(error)
   }
 }
@@ -140,6 +153,10 @@ export const accountSummary = async (
     
     return res.status(result.code).json(responseData)
   } catch (error) {
+    Logger.error(
+      'Error: an error occurred fetching account summary wallet.controller::accountSummary',
+      error,
+    );
     next(error)
   }
 }
@@ -172,10 +189,12 @@ export const transactionHistory = async (
       ... transactions 
     }
 
-    
-
     return res.status(result.code).json(responseData)
   } catch (error) {
+    Logger.error(
+      'Error: an error occurred fetching transaction history wallet.controller::transactionHistory',
+      error,
+    );
     next(error)
   }
 }

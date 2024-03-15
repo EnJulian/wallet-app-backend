@@ -1,5 +1,6 @@
 import { type NextFunction, type Request, type Response } from 'express'
 import { loginUser, registerNewUser } from '../services/user.service'
+import Logger from '../config/logger';
 
 /**
  * register new wallet customer
@@ -38,6 +39,10 @@ export const createWalletUser = async (
     )
     res.status(data.code).json(data)
   } catch (error) {
+    Logger.error(
+      'Error: an error occurred while creating user wallet user.controller::createWalletUser',
+      error
+    );
     next(error)
   }
 }
@@ -56,6 +61,10 @@ export const loginWalletUser = async (
       data
     )
   } catch (error) {
+    Logger.error(
+      'Error: an error occurred while logging user in user.controller::loginWalletUser',
+      error,
+    );
     next(error)
   }
 }
