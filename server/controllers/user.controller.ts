@@ -1,5 +1,6 @@
 import { type NextFunction, type Request, type Response } from 'express'
 import { loginUser, registerNewUser } from '../services/user.service'
+import Logger from '../config/logger';
 
 /**
  * register new wallet customer
@@ -27,7 +28,7 @@ export const createWalletUser = async (
       password,
       phonenumber
     } = req.body
-
+    Logger.info(`[CREATE_WALLET_USER] by ${email}`)
     const data = await registerNewUser(
       firstname,
       surname,
@@ -38,6 +39,10 @@ export const createWalletUser = async (
     )
     res.status(data.code).json(data)
   } catch (error) {
+    Logger.error(
+      `[CREATE_WALLET_USER_FAILED]`,
+      (error as Error).message
+    );
     next(error)
   }
 }
@@ -48,14 +53,18 @@ export const loginWalletUser = async (
   next: NextFunction
 ) => {
   try {
-  const { email, password } = req.body
-    
+    const { email, password } = req.body
+    Logger.info(`[LOGIN_WALLET_USER] by ${email}`)
     const data = await loginUser( email, password)
 
     res.status(data.code).json(
       data
     )
   } catch (error) {
+    Logger.error(
+    `[LOGIN_WALLET_USER_FAILED]`,
+    (error as Error).message,
+    );
     next(error)
   }
 }

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import nodemailer from "nodemailer"; // sending emails to clients
 import Mailgen from "mailgen"; // responsive html email that can be seen using nodemailer
+import Logger from '../config/logger';
 
 export const sendCustomizedEmail = async (
   req: Request,
@@ -54,6 +55,10 @@ export const sendCustomizedEmail = async (
 
     return res.status(200).json({ message: "Email sent successfully" });
   } catch (error) {
+    Logger.error(
+      'Error: an error occurred sending reset password email to user services::emailsender.service::sendCustomizedEmail',
+      error,
+    );
     res.status(500).json({ error: "Internal server error" });
   }
 };

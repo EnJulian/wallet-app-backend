@@ -4,3 +4,8 @@ dist
 package-lock.json
 .idea
 dummy_users.txt
+logs
+log
+logs/
+log/
+*.log

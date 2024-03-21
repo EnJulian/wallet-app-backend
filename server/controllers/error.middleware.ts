@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   type Request,
   type Response,
   type NextFunction,
   type ErrorRequestHandler,
 } from "express";
+import Logger from "../config/logger";
 
 /**
  * Error response middleware for 404 not found.
@@ -39,14 +41,7 @@ export const appErrorHandler: ErrorRequestHandler = (
   next: NextFunction
 ) => {
   if (err.code !== null && typeof err.code === "number") {
-    // TODO remove console.log replace with logging
-    console.log(`
-      status - ${err.code}
-      message - ${err.message} 
-      url - ${req.originalUrl} 
-      method - ${req.method} 
-      IP - ${req.ip}
-    `);
+    Logger.error(`[APP_ERROR]`, err)
 
     res.status(err.code).json({
       code: err.code,
@@ -75,14 +70,7 @@ export const genericErrorHandler: ErrorRequestHandler = (
   req: Request,
   res: Response
 ) => {
-  // TODO remove console.log replace with logging
-  console.log(`
-    status - 500 
-    message - ${err.stack} 
-    url - ${req.originalUrl} 
-    method - ${req.method} 
-    IP - ${req.ip}
-  `);
+  Logger.error(`[GENERIC_ERROR]`, err)
 
   res.status(500).json({
     code: 500,

@@ -1,12 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // controllers/transactionController.ts
 import { Request, Response } from "express";
 import User from "../models/User";
 import Transactions from "../models/Transactions";
+import Logger from "../config/logger";
 
 export const getTransactions = async (req: Request, res: Response) => {
   try {
     // Fetch userId from request
     const userId = (req as any).userId;
+
+    Logger.info(`[GET_TRANSACTIONS] by ${userId}`)
 
     const user = await User.findById(userId);
     if (!user) {
@@ -30,7 +34,7 @@ export const getTransactions = async (req: Request, res: Response) => {
       filter.createdAt = {
         $gte: startDate,
       };
-      console.log(startDate);
+
     }
 
     if (req.query.endDate) {
@@ -41,7 +45,6 @@ export const getTransactions = async (req: Request, res: Response) => {
         ...filter.createdAt,
         $lte: endDate,
       };
-      console.log(endDate);
     }
 
     if (req.query.transactionStatus) {
@@ -52,14 +55,15 @@ export const getTransactions = async (req: Request, res: Response) => {
     const transactions = await Transactions.find(filter).select(
       "status transactionType  createdAt"
     );
-
+    Logger.info(`[GET_TRANSACTION_HISTORY_SUCCESS]`)
     return res.status(200).json({
       message: "Transactions fetched successfully",
       status: "success",
       data: transactions,
     });
+
   } catch (error) {
-    console.error(error);
+    Logger.error(`[FETCH_TRANSACTIONS_FAILED]`, (error as Error).message)
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -67,7 +71,7 @@ export const getTransactions = async (req: Request, res: Response) => {
 export const searchUsers = async (req: Request, res: Response) => {
   try {
     const searchQuery: any = {};
-
+    Logger.info(`[SEARCH_USERS] query ${searchQuery}`)
     if (req.query.firstname) {
       // Case-insensitive search by name
       searchQuery["firstname"] = {
@@ -77,14 +81,14 @@ export const searchUsers = async (req: Request, res: Response) => {
 
     const searchResults = await User.find(searchQuery);
     // res.json(searchResults);
+    Logger.info(`[SEARCH_USERS_SUCCESS] query ${searchQuery}`)
     return res.status(200).json({
       message: "Details status searched successfully",
       status: "success",
       data: searchResults,
     });
   } catch (error) {
-
-    console.error(error);
+    Logger.error(`[SEARCH_USERS_FAILED]`, (error as Error).message)
     res.status(500).json({
       error: "Internal Server Error",
       details: (error as Error).message,

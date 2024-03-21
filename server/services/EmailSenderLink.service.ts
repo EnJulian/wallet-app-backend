@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 import { applicantForgotPasswordMail } from "../EmailSender.template";
+import Logger from '../config/logger';
 
 dotenv.config();
 
 const sendGridKey: string | undefined = process.env.WALLET_SENDGRID_API_KEY;
 
 if (!sendGridKey) {
-  console.error("SendGrid API key is missing in environment variables.");
+  Logger.error(`[API_KEY_MISSING]`)
   process.exit(1);
 }
 
@@ -42,7 +44,7 @@ export async function sendResetPasswordEmail(email: string): Promise<any> {
 
   try {
     await sgMail.send(message);
-    console.log("Email sent successfully for you to reset your password");
+    Logger.info(`[SEND_EMAIL_SUCCESS] `)
 
     // If running in test environment, resolve with success
     if (process.env.NODE_ENV === "test") {
@@ -52,7 +54,11 @@ export async function sendResetPasswordEmail(email: string): Promise<any> {
     }
   } catch (error: any) {
     // Specify 'any' as the error type
-    console.error(error.message); // Use error.message directly
+    // Use error.message directly
+    Logger.error(
+      `[SEND_EMAIL_FAILED]`,
+      error,
+    );
     throw new Error("Failed to send email.");
   }
 }

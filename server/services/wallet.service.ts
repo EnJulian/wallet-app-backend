@@ -73,7 +73,7 @@ export const depositFunds = async ( userId: string, amount: number, wallet: stri
       transactionType: transactionType,
       amount: amount,
       currency: 'NGN'
-     }
+  }
     
     await Transactions.create(depositFundTransaction)
 
@@ -133,14 +133,13 @@ export const transferFunds = async (
   userId: string,
   receiverAccountNumber: string, 
   transactionType: string,
- wallet: string,
+  wallet: string,
   pin: string
 ) => {
   const _id = userId
 
   const fetchPin = await User.findOne({ _id })
   
-  // TODO verify pin, 
   if(!fetchPin?.pin){
     return Utils.provideResponse(400, 'error', 'invalid pin', {})
   }
