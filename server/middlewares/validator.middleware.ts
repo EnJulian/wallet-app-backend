@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction } from 'express'
 import { Utils } from '../utils'
 import validator from 'validator'
-
+import Logger from '../config/logger'
 
 const PASSWORD_VALIDATOR = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).*$/,)
 /**
@@ -53,6 +53,11 @@ export const validateUserSignUpInput = (req: Request, res: Response, next: NextF
 
     next()
   } catch (error) {
+    Logger.error(
+      'Error: an error occurred validating user sign up input validator.middleware::validateUserSignUpInput',
+      error,
+    );
+
     next(error)
   }
 }
@@ -76,6 +81,11 @@ export const validateLoginInput = (req: Request, res: Response, next: NextFuncti
 
     next()
   } catch (error) {
+    Logger.error(
+      'Error: an error occurred validating user log in input validator.middleware::validateUserLogInInput',
+      error,
+    );
+
     next(error)
   }
 }
@@ -92,6 +102,10 @@ export const validateFundWalletFundInputs = (req: Request, res: Response, next: 
 
     next()
   } catch (error) {
+    Logger.error(
+      'Error: an error occurred validating fund wallet input validator.middleware::validateFundWalletFundInputs',
+      error,
+    );
     next(error)
   }
 }
@@ -119,6 +133,10 @@ export const validateTransferFundsInputs = (req: Request, res: Response, next: N
 
     next()
   } catch (error) {
+    Logger.error(
+      'Error: an error occurred validating transfer funds input validator.middleware::validateTransferFundsInputs',
+      error,
+    );
     next(error)
   }
 }
