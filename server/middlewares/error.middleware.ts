@@ -55,7 +55,6 @@ export const appErrorHandler: ErrorRequestHandler = (
 // Generic error response middleware
 // for internal server errors.
 /**
- * Description placeholder
  * @date 1/15/2024 - 4:05:15 PM
  * @export
  * @param {any} err
@@ -68,12 +67,14 @@ export const appErrorHandler: ErrorRequestHandler = (
 export const genericErrorHandler: ErrorRequestHandler = (
   err: any,
   req: Request,
-  res: Response) => {
+  res: Response,
+  next: NextFunction) => {
   Logger.error(`[GENERIC_ERROR]`, err)
 
-  res.status(500).json({
+  return res.status(500).json({
     code: 500,
     data: '',
-    message: err.message
+    message: err.message,
+    stack :process.env.NODE_ENV === 'production' ? null : err.stack,
   })
 }
